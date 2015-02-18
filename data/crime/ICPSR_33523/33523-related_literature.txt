@@ -1,0 +1,113 @@
+Bibliography
+Uniform Crime Reporting Program Data: County-Level Detailed Arrest and
+Offense Data, 2010
+
+This bibliography includes published and unpublished works that are related 
+to ICPSR study 33523. It includes works that are based on primary
+or secondary analysis of the data, or which describe or critique those
+data or the collection methodology. This list represents all items known
+to ICPSR as of 2015-02-12.
+
+If you publish a work or know of other works that are based on these data,
+please send the complete citation and name of the ICPSR study used to:
+bibliography@icpsr.umich.edu.
+
+
+1. Aneja, Abhay; Donohue, John J., III; Zhang, Alexandria,, "The Impact of
+Right to Carry Laws and the NRC Report: The Latest Lessons for the
+Empirical Evaluation of Law and Policy." Stanford Law and Economics Olin
+Working Paper No. 461. Sep 4, 2014.
+Abstract: http://ssrn.com/abstract=2443681
+
+2. Brasier, Kathryn; Davis, Lisa; Glenna, Leland; Kelsey, Tim; McLaughlin,
+Diane; Schafft, Kai; Babbie, Kristin; Biddle, Catherine; Delessio-Parson,
+Anne; Rhubart, Danielle, "The Marcellus Shale Impacts Study: Chronicling
+Social and Economic Change in North Central and Southwest Pennsylvania."
+Harrisburg, PA: Center for Rural Pennsylvania, Sep 2014.
+Full text PDF: http://www.rural.palegislature.us/documents/reports/The-Marcellus-Shale-Impacts-Study.pdf
+
+3. Cook, Alan; Reingle Gonzalez, Jennifer; Balasubramanian, Bijal A., "Do
+neighborhood demographics, crime rates, and alcohol outlet density predict
+incidence, severity, and outcome of hospitalization for traumatic injury? A
+cross-sectional study of Dallas County, Texas, 2010." Injury Epidemiology.
+2014, 1, (23),. DOI: 10.1186/s40621-014-0023-2
+Full text PDF: http://www.rural.palegislature.us/documents/reports/The-Marcellus-Shale-Impacts-Study.pdf
+
+4. Federal Bureau of Investigation, "Crime in the United States 2010."
+Updated 2011,.
+Full text: http://www.fbi.gov/about-us/cjis/ucr/crime-in-the-u.s/2010/crime-in-the-u.s.-2010
+
+5. Greene, Marion; Wright, Eric, "Using Data to Identify Substance Abuse
+Prevention Needs." Improving Community Health Through Policy Research. 13-
+H42, Indianapolis, IN: IUPUI, Center for Health Policy, May 2013.
+Full text: http://hdl.handle.net/2450/7230
+
+6. James, Alexander; Smith, Brock, "There will be blood: Crime rates in
+shale-rich U.S. counties." OxCarre Research Paper 140, Oxford, UK:
+University of Oxford, Department of Economics, OxCarre, Oxford Centre for
+the Analysis of Resource Rich Economies, Jun 11, 2014..
+Full text: http://hdl.handle.net/2450/7230
+
+7. LaRiviere, Jacob S.; Wolff, Hendrik, "The Power of the Little Blue Pill:
+Innovations and Implications of Life Style Drugs in an Aging Population."
+IZA Discussion Paper No. 8261. Jun 2014.
+Full text: http://ssrn.com/abstract=2460204
+
+8. Wright, Richard; Tekin, Erdal; Topalli, Volkan; McClellan, Chandler;
+Dickinson, Timothy; Rosenfeld, Richard, "Less Cash, Less Crime: Evidence
+from the Electronic Benefit Transfer Program." 19996, Cambridge, MA:
+National Bureau of Economic Research, Mar 2014.
+Abstract: http://www.nber.org/papers/w19996
+Full text PDF: http://www.nber.org/papers/w19996.pdf?new_window=1
+It has been long recognized that cash plays a critical role in fueling
+street crime due to its liquidity and transactional anonymity. In poor
+neighborhoods where street offenses are concentrated, a significant source
+of circulating cash stems from public assistance or welfare payments. In
+the 1990s, the Federal government mandated individual states to convert the
+delivery of their welfare benefits from paper checks to an Electronic
+Benefit Transfer (EBT) system, whereby recipients received and expended
+their funds through debit cards. In this paper, we examine whether the
+reduction in the circulation of cash on the streets associated with EBT
+implementation had an effect on crime. To address this question, we exploit
+the variation in the timing of the EBT implementation across Missouri
+counties. Our results indicate that the EBT program had a negative and
+significant effect on the overall crime rate as well as burglary, assault,
+and larceny. According to our point estimates, the overall crime rate
+decreased by 9.8 percent in response to the EBT program. We also find a
+negative effect on arrests, especially those associated with non-drug
+offenses. EBT implementation had no effect on rape, a crime that is
+unlikely to be motivated by the acquisition of cash. Interestingly, the
+significant drop in crime in the United States over several decades has
+coincided with a period of steady decline in the proportion of financial
+transactions involving cash. In that sense, our findings serve as a fresh
+contribution to the important debate surrounding the factors underpinning
+the great American crime decline.
+
+9. d'Este, Rocco, "The Effect of Stolen Goods Markets on Crime: Evidence
+from a Quasi - Natural Experiment
+." Feb 2014..
+Abstract: http://www.nber.org/papers/w19996
+Full text PDF: http://www.nber.org/papers/w19996.pdf?new_window=1
+It has been long recognized that cash plays a critical role in fueling
+street crime due to its liquidity and transactional anonymity. In poor
+neighborhoods where street offenses are concentrated, a significant source
+of circulating cash stems from public assistance or welfare payments. In
+the 1990s, the Federal government mandated individual states to convert the
+delivery of their welfare benefits from paper checks to an Electronic
+Benefit Transfer (EBT) system, whereby recipients received and expended
+their funds through debit cards. In this paper, we examine whether the
+reduction in the circulation of cash on the streets associated with EBT
+implementation had an effect on crime. To address this question, we exploit
+the variation in the timing of the EBT implementation across Missouri
+counties. Our results indicate that the EBT program had a negative and
+significant effect on the overall crime rate as well as burglary, assault,
+and larceny. According to our point estimates, the overall crime rate
+decreased by 9.8 percent in response to the EBT program. We also find a
+negative effect on arrests, especially those associated with non-drug
+offenses. EBT implementation had no effect on rape, a crime that is
+unlikely to be motivated by the acquisition of cash. Interestingly, the
+significant drop in crime in the United States over several decades has
+coincided with a period of steady decline in the proportion of financial
+transactions involving cash. In that sense, our findings serve as a fresh
+contribution to the important debate surrounding the factors underpinning
+the great American crime decline.

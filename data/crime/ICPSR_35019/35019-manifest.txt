@@ -1,0 +1,226 @@
+File Manifest for ICPSR 35019
+
+United States Department of Justice. Federal Bureau of Investigation.
+Uniform Crime Reporting Program Data: County-Level Detailed Arrest and
+Offense Data, 2012. ICPSR35019-v1. Ann Arbor, MI: Inter-university
+Consortium for Political and Social Research [distributor], 2014-06-12.
+http://doi.org/10.3886/ICPSR35019.v1
+
+
+Study-level Documentation
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-manifest.txt                  -       -         -       2015-02-17  -
+
+    35019-Codebook.pdf                  -       -         -       2014-06-12  a30d6c4c6ec4fff89ef02e648d47166c
+
+
+DS0001 Arrests, All Ages
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0001-Data.dta                 -       3,178     56      2014-06-12  24e83913378bef1e4f27746fd057d776
+
+    35019-0001-Data.rda                 -       3,178     56      2014-06-12  058b61d35499de5069426fb9699a7790
+
+    35019-0001-Data.sav                 -       3,178     56      2014-06-12  62a979a54c2ab35fd7bb485323340aea
+
+    35019-0001-Data.stc                 -       3,178     56      2014-06-12  d2011c879d36b6198278601e961eeae8
+
+    35019-0001-Data.tsv                 -       3,178     56      2014-06-12  2c0d8492253204bd134c9b83023ea9ac
+
+    35019-0001-Data.txt                 246     3,178     56      2014-06-12  f4cfb607499505a89e37c4cc65819d92
+
+    35019-0001-Setup.dct                -       -         -       2014-06-12  32a04402988aff622c50861f8a647075
+
+    35019-0001-Setup.do                 -       -         -       2014-06-12  8502fdd11c74aff05749a9d0bcb5eb14
+
+    35019-0001-Setup.sas                -       -         -       2014-06-12  edb4a80d9d257da327855babfe221c93
+
+    35019-0001-Setup.sps                -       -         -       2014-06-12  e287848d59992c1f51473adce15b227b
+
+
+DS0002 Arrests, Adult
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0002-Data.dta                 -       3,178     56      2014-06-12  829738a0796f643a15fe89a3987b7feb
+
+    35019-0002-Data.rda                 -       3,178     56      2014-06-12  96ac16465f8bf7e6512270f9f3ea1b1b
+
+    35019-0002-Data.sav                 -       3,178     56      2014-06-12  f37fcea8f269408db50ae3078f4650fb
+
+    35019-0002-Data.stc                 -       3,178     56      2014-06-12  02d8746866177d37dc551275d19d81c1
+
+    35019-0002-Data.tsv                 -       3,178     56      2014-06-12  7010ffbb8fb5cc37af0d6379f128f0af
+
+    35019-0002-Data.txt                 246     3,178     56      2014-06-12  f5342d765fd5e9bccf5c7632be5eb427
+
+    35019-0002-Setup.dct                -       -         -       2014-06-12  b4acf2b4859515ab634eff9492955f65
+
+    35019-0002-Setup.do                 -       -         -       2014-06-12  7a1f05006dadd048ecc6e8be40a7ebca
+
+    35019-0002-Setup.sas                -       -         -       2014-06-12  8ef5d83146f0fbd398c1a55ab1149e4a
+
+    35019-0002-Setup.sps                -       -         -       2014-06-12  850c0b44431da156a83459a8a7aeb044
+
+
+DS0003 Arrests, Juveniles
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0003-Data.dta                 -       3,178     56      2014-06-12  94536d282cbe39267b840e8c19c232a5
+
+    35019-0003-Data.rda                 -       3,178     56      2014-06-12  a6703ffbed7c0e09ac44a961c3c4d7b2
+
+    35019-0003-Data.sav                 -       3,178     56      2014-06-12  f5bd202eac307ae24ff93396f18a11fd
+
+    35019-0003-Data.stc                 -       3,178     56      2014-06-12  f2dce0110890d494d8325493a2c6aaed
+
+    35019-0003-Data.tsv                 -       3,178     56      2014-06-12  a37477fd41c3e05b611b9677976063c1
+
+    35019-0003-Data.txt                 246     3,178     56      2014-06-12  41a0cf21452194da6b50b271fb3f8364
+
+    35019-0003-Setup.dct                -       -         -       2014-06-12  f31c1f1308b68593822f78a01a448566
+
+    35019-0003-Setup.do                 -       -         -       2014-06-12  551d9c0fe09023070bd96a89f8f07717
+
+    35019-0003-Setup.sas                -       -         -       2014-06-12  9e918e38d130ef8fb0068a4f1092d073
+
+    35019-0003-Setup.sps                -       -         -       2014-06-12  ca04c009ed194f8a6221eb696c34dc2a
+
+
+DS0004 Crimes Reported
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0004-Data.dta                 -       3,178     21      2014-06-12  4ebd98b0d1dfdcece03171d0b34f0e69
+
+    35019-0004-Data.rda                 -       3,178     21      2014-06-12  24744e3e9927ed1b1bd27c6e9df57acf
+
+    35019-0004-Data.sav                 -       3,178     21      2014-06-12  4a75e24438ea6d96f8187599bc911f4c
+
+    35019-0004-Data.stc                 -       3,178     21      2014-06-12  0fc403416922c95eb8e2f734c6bce737
+
+    35019-0004-Data.tsv                 -       3,178     21      2014-06-12  6bbee0d4053766187451056d058819e5
+
+    35019-0004-Data.txt                 97      3,178     21      2014-06-12  0d313e9cb25f1102e6d3f4f84188d5d9
+
+    35019-0004-Setup.dct                -       -         -       2014-06-12  31cad1a47b2c0c5bf9f845bde3cdfd2c
+
+    35019-0004-Setup.do                 -       -         -       2014-06-12  922c37c59623348f4661281708cb8ff5
+
+    35019-0004-Setup.sas                -       -         -       2014-06-12  0b004df1f4a1e69f0bc1a73a69825f10
+
+    35019-0004-Setup.sps                -       -         -       2014-06-12  2855834fb5bb357fdb9ea0fc0e5c6d30
+
+
+DS0005 Allocated Statewide Data for Arrests, All Ages
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0005-Data.dta                 -       3,178     57      2014-06-12  10c1fd2b3e80d3693506da2b887bcca4
+
+    35019-0005-Data.rda                 -       3,178     57      2014-06-12  d8aa800bf1dc274b349b48b66d94062c
+
+    35019-0005-Data.sav                 -       3,178     57      2014-06-12  129c0f30c2408cd6e44be567ca031f98
+
+    35019-0005-Data.stc                 -       3,178     57      2014-06-12  e5d1aaa8c2d53893f21919f115eb8f54
+
+    35019-0005-Data.tsv                 -       3,178     57      2014-06-12  c8409c6abbe27bfb0cc6c1226e1b09bd
+
+    35019-0005-Data.txt                 250     3,178     57      2014-06-12  fc631bae3522d67d660248af14f1082a
+
+    35019-0005-Setup.dct                -       -         -       2014-06-12  fd2880c5d47ed751d90402e85393a097
+
+    35019-0005-Setup.do                 -       -         -       2014-06-12  30ed3d4ac4c03ad0b3bbbcb6371e41a3
+
+    35019-0005-Setup.sas                -       -         -       2014-06-12  19e3df4ca661faac7967f519a98874ac
+
+    35019-0005-Setup.sps                -       -         -       2014-06-12  f56eab02d9f4e94b1390e0167d0c71cf
+
+
+DS0006 Allocated Statewide Data for Arrests, Adults
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0006-Data.dta                 -       3,178     57      2014-06-12  108c4140247e31fcbf856c81e1cc4998
+
+    35019-0006-Data.rda                 -       3,178     57      2014-06-12  f9bcd6bbfca898ad57aaf0102d2e1b05
+
+    35019-0006-Data.sav                 -       3,178     57      2014-06-12  53d76456268eb50f0883406634f95c60
+
+    35019-0006-Data.stc                 -       3,178     57      2014-06-12  48ce4afec44989492591698e469b036c
+
+    35019-0006-Data.tsv                 -       3,178     57      2014-06-12  dbb58079c08b60f82086a36f656260bd
+
+    35019-0006-Data.txt                 250     3,178     57      2014-06-12  4e1ed44c1a2c14ed240aa5bd325dae93
+
+    35019-0006-Setup.dct                -       -         -       2014-06-12  bcf7e82476638dafc454260a68bf45b8
+
+    35019-0006-Setup.do                 -       -         -       2014-06-12  d0c66b7dc9773ae4aba9c54b25c2d402
+
+    35019-0006-Setup.sas                -       -         -       2014-06-12  2f154316292690726859314a1d36b1a3
+
+    35019-0006-Setup.sps                -       -         -       2014-06-12  68fbcb62e9b54eb09065fd8332beb04d
+
+
+DS0007 Allocated Statewide Data for Arrests, Juveniles
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0007-Data.dta                 -       3,178     57      2014-06-12  20994175ce8e6b0ddcebf09e6d7a9961
+
+    35019-0007-Data.rda                 -       3,178     57      2014-06-12  64bc459b10f84444c49f82c8dc9cc93f
+
+    35019-0007-Data.sav                 -       3,178     57      2014-06-12  e06d2f15103d4b2648e9a62a261b7a05
+
+    35019-0007-Data.stc                 -       3,178     57      2014-06-12  8b5baad15409968fb2754be7e4befdc8
+
+    35019-0007-Data.tsv                 -       3,178     57      2014-06-12  61824428439171caadca64f8f1f33d5a
+
+    35019-0007-Data.txt                 250     3,178     57      2014-06-12  e7ebab3425a561b96d9dfec35929bfa0
+
+    35019-0007-Setup.dct                -       -         -       2014-06-12  d58f66fad6050d8e4f38957818f9d40b
+
+    35019-0007-Setup.do                 -       -         -       2014-06-12  102d67900acd7868b5dc67bd3e47080c
+
+    35019-0007-Setup.sas                -       -         -       2014-06-12  1d8f8100b9121825fa11fc0d6d87178d
+
+    35019-0007-Setup.sps                -       -         -       2014-06-12  b5528033955db937c7c0f10cf1f3a13c
+
+
+DS0008 Allocated Statewide Data for Crimes Reported
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35019-0008-Data.dta                 -       3,178     22      2014-06-12  00406e5d8b62af17a011b806462e6cf0
+
+    35019-0008-Data.rda                 -       3,178     22      2014-06-12  cfea93ec337b870e9f4d41214ffa21a2
+
+    35019-0008-Data.sav                 -       3,178     22      2014-06-12  e894a999f78757d4b4d70e2dfa087cb9
+
+    35019-0008-Data.stc                 -       3,178     22      2014-06-12  62775a26128a09373bfc73a87a7bf820
+
+    35019-0008-Data.tsv                 -       3,178     22      2014-06-12  59a2e17bc3f1a01fe2c4ea7cc87b05cf
+
+    35019-0008-Data.txt                 104     3,178     22      2014-06-12  45e1b8124693be4c289d172cafa1a06b
+
+    35019-0008-Setup.dct                -       -         -       2014-06-12  c2c698dfadc06a54b1be0e95cf51ce1e
+
+    35019-0008-Setup.do                 -       -         -       2014-06-12  0cb841ed9a055608f633ab7bb9c5b0c5
+
+    35019-0008-Setup.sas                -       -         -       2014-06-12  918a6979a425239bd0cfcd28bca78176
+
+    35019-0008-Setup.sps                -       -         -       2014-06-12  5d32906646f79ec21f32da20f2cf04ce
+
