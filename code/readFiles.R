@@ -19,6 +19,9 @@
 # HUD Homelessness Exchange
 # https://www.hudexchange.info/resource/3031/pit-and-hic-data-since-2007/
 
+# American Housing Survey (AHS)
+# http://www.census.gov/programs-surveys/ahs.html
+
 # Food Environment Atlas
 # http://www.ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads.aspx#.VEXQQPnF-mE
 

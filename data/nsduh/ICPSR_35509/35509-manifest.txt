@@ -1,0 +1,57 @@
+File Manifest for ICPSR 35509
+
+United States Department of Health and Human Services. Substance Abuse and
+Mental Health Services Administration. Center for Behavioral Health
+Statistics and Quality. National Survey on Drug Use and Health, 2013.
+ICPSR35509-v1. Ann Arbor, MI: Inter-university Consortium for Political and
+Social Research [distributor], 2014-11-18.
+http://doi.org/10.3886/ICPSR35509.v1
+
+
+Study-level Documentation
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35509-related_literature.txt        -       -         -       2015-02-16  -
+
+    35509-manifest.txt                  -       -         -       2015-02-17  -
+
+
+DS0001 National Survey on Drug Use and Health, 2013
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    35509-0001-Codebook.pdf             -       -         -       2014-11-18  39e1ba48a4303d321c72d10b42881b91
+
+    35509-0001-Data.dta                 -       55,160    3141    2014-11-18  e94b085fac71c91bb0347aa3f822e6cd
+
+    35509-0001-Data.rda                 -       55,160    3141    2014-11-18  46662bc33b185c88b38d4cc3049a8042
+
+    35509-0001-Data.sav                 -       55,160    3141    2014-11-18  c3b74f5fe3d2fdcd5b702fe4b6572ea3
+
+    35509-0001-Data.stc                 -       55,160    3141    2014-11-18  a764034be61149132a65d66eff7ff5d6
+
+    35509-0001-Data.tsv                 -       55,160    3141    2014-11-18  b7af0f8e5207b20078132a87477b9d1e
+
+    35509-0001-Data.txt                 6876    55,160    3141    2014-11-18  a138a487056b3cf35fb11c569b9b6fff
+
+    35509-0001-Questionnaire-screener.pdf -       -         -       2014-11-18  ab3e7b64f13e1610821bb3cf6838d470
+
+    35509-0001-Questionnaire-showcards.pdf -       -         -       2014-11-18  098d8d95d5d49c377cdb29dc9cb3d76f
+
+    35509-0001-Questionnaire-specs.pdf  -       -         -       2014-11-18  43ee4ac3ab95d3ad4fb43420abfb47c9
+
+    35509-0001-Setup.dct                -       -         -       2014-11-18  13be186f7c03a8420e0233f11d8a42eb
+
+    35509-0001-Setup.do                 -       -         -       2014-11-18  ffce3a605a346f1168b0c06cadf1b17f
+
+    35509-0001-Setup.sas                -       -         -       2014-11-18  402f64b899ed8239a0165c853a8d4279
+
+    35509-0001-Setup.sps                -       -         -       2014-11-18  41b0520a2c9d10c69aeac0d5392862bb
+
+    35509-0001-Supplemental_syntax.do   -       -         -       2014-11-18  de573268bde0b5390c3e0c0726ee6ccf
+
+    35509-0001-Supplemental_syntax.sas  -       -         -       2014-11-18  e8db476a3184f782ea07e46540ee0436
+

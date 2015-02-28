@@ -1,0 +1,47 @@
+Bibliography
+National Survey on Drug Use and Health, 2013
+
+This bibliography includes published and unpublished works that are related 
+to ICPSR study 35509. It includes works that are based on primary
+or secondary analysis of the data, or which describe or critique those
+data or the collection methodology. This list represents all items known
+to ICPSR as of 2015-02-17.
+
+If you publish a work or know of other works that are based on these data,
+please send the complete citation and name of the ICPSR study used to:
+bibliography@icpsr.umich.edu.
+
+
+1. Arias, Devin; Becerra, Benjamin J.; Becerra, Monideepa B., "Racial and
+ethnic differences in asthma and mental health among US adults: Results
+from the National Survey on Drug Use and Health." Journal of Asthma. in
+press 2015,. DOI: 10.3109/02770903.2015.1005843
+
+2. Caulkins, Jonathan P.;  Kilmer, Beau; Kleiman, Mark A.R.; MacCoun,
+Robert J.; Midgette, Gregory; Oglesby, Pat; Pacula, Rosalie L.; Reuter,
+Peter H., "Considering Marijuana Legalization: Insights for Vermont and
+Other Jurisdictions." Research Report. Santa Monica, CA: RAND Corporation,
+2015.
+Abstract: http://www.rand.org/pubs/research_reports/RR864.html
+Full text PDF: http://www.rand.org/content/dam/rand/pubs/research_reports/RR800/RR864/RAND_RR864.pdf
+
+3. Center for Behavioral Health Statistics and Quality, "Substance Use and
+Mental Health Estimates from the 2013 National Survey on Drug Use and
+Health: Overview of Findings." No. 14-4863, Rockville, MD: Substance Abuse
+and Mental Health Services Administration, 2014.
+Full text PDF: http://www.samhsa.gov/data/2k14/NSDUH200/sr200-findings-overview-2014.pdf
+
+4. Substance Abuse and Mental Health Services Administration, Center for
+Behavioral Health Statistics and Quality, "Results from the 2013 National
+Survey on Drug Use and Health: Detailed Tables." Rockville, MD: United
+States Department of Health and Human Services, Substance Abuse and Mental
+Health Services Administration , 2014.
+Full text: http://www.samhsa.gov/data/sites/default/files/NSDUH-DetTabsPDFWHTML2013/Web/HTML/NSDUH-DetTabsTOC2013.htm
+
+5. Substance Abuse and Mental Health Services Administration, Center for
+Behavioral Health Statistics and Quality, "Results from the 2013 National
+Survey on Drug Use and Health: Summary of National Findings." NSDUH Series
+H-48. (SMA) 14-4863, Rockville, MD: United States Department of Health and
+Human Services,  Substance Abuse and Mental Health Services Administration,
+2014.
+Full text: http://www.samhsa.gov/data/sites/default/files/NSDUHresultsPDFWHTML2013/Web/NSDUHresults2013.htm

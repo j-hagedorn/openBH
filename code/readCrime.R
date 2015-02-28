@@ -34,7 +34,9 @@ my_lm <- lm(UCRP_2012$ROBBERY~UCRP_2012$AGASSLT)
 summary(my_lm)
 
 
-fips <- read.csv("http://www2.census.gov/geo/docs/reference/codes/files/national_county.txt")
+fips <- read.csv("http://www2.census.gov/geo/docs/reference/codes/files/national_county.txt", header = F)
+names(fips) <- c("state_name","state_code","county_code","county_name","unknown")
+
 
 state <-
   da33523.0001 %>%
