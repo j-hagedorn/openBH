@@ -29,5 +29,53 @@ afc$Expiration <- ymd(afc$Expiration)
 # Log download date
 afc$Downloaded <- Sys.Date()
 
+# Make a complete address field for geocoding
+library(dplyr)
+library(stringr)
+afc_map <-
+afc %>%
+  mutate(GeoAddress = str_trim(paste(SuppAddress,Street,City,State,Zip,", usa", sep = " "))) %>%
+  select(LicenseNo, GeoAddress)
+
 # Write to file
 write.csv(afc, file = "data/afc.csv")
+
+
+# Add lat/long of addresses
+
+# Define addresses variable for use in function
+data <- afc_map
+addresses <- afc_map$GeoAddress
+
+  #initialise a dataframe to hold the results
+  geocoded <- data.frame()
+  # find out where to start in the address list (if the script was interrupted before):
+  startindex <- 1
+  #if a temp file exists - load it up and count the rows!
+  tempfilename <- paste0('addresses_temp_geocoded.rds')
+  if (file.exists(tempfilename)){
+    print("Found temp file - resuming from index:")
+    geocoded <- readRDS(tempfilename)
+    startindex <- nrow(geocoded)
+    print(startindex)
+  }
+  
+  # Start the geocoding process - address by address. geocode() function takes care of query speed limit.
+  for (ii in seq(startindex, length(addresses))){
+    print(paste("Working on index", ii, "of", length(addresses)))
+    #query the google geocoder - this will pause here if we are over the limit.
+    result = getGeoDetails(addresses[ii]) 
+    print(result$status)     
+    result$index <- ii
+    #append the answer to the results file.
+    geocoded <- rbind(geocoded, result)
+    #save temporary results as we are going along
+    saveRDS(geocoded, tempfilename)
+  }
+  
+  #now we add the latitude and longitude to the main data
+  data$lat <- geocoded$lat
+  data$long <- geocoded$lat
+  data$accuracy <- geocoded$accuracy
+
+
