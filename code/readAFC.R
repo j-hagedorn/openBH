@@ -45,12 +45,13 @@ write.csv(afc, file = "data/afc.csv")
 
 # Define addresses variable for use in function
 data <- afc_map
+
 addresses <- afc_map$GeoAddress
 
   #initialise a dataframe to hold the results
   geocoded <- data.frame()
   # find out where to start in the address list (if the script was interrupted before):
-  startindex <- 1
+  startindex <- 2527
   #if a temp file exists - load it up and count the rows!
   tempfilename <- paste0('addresses_temp_geocoded.rds')
   if (file.exists(tempfilename)){
@@ -75,7 +76,36 @@ addresses <- afc_map$GeoAddress
   
   #now we add the latitude and longitude to the main data
   data$lat <- geocoded$lat
-  data$long <- geocoded$lat
+  data$long <- geocoded$long
   data$accuracy <- geocoded$accuracy
+  data$formatted_address <- geocoded$formatted_address
+
+# join
+
+data <-
+afc %>%
+  inner_join(data, by = "LicenseNo")
 
 
+# Use rCharts leaflet
+library(rCharts)
+map <- Leaflet$new()
+map$setView(c(43.808709, -85.373016), 
+            zoom = 7)
+map$tileLayer(provider = 'Stamen.TonerLite')
+#map$marker(data$lat, data$long, bindPopup = data$FacilityName)
+map$geoJson(toGeoJSON(data_), 
+            onEachFeature = '#! function(feature, layer){
+      layer.bindPopup(feature.properties.popup)
+            } !#',
+            pointToLayer =  "#! function(feature, latlng){
+            return L.circleMarker(latlng, {
+            radius: 4,
+            fillColor: feature.properties.fillColor || 'red',    
+            color: '#000',
+            weight: 1,
+            fillOpacity: 0.8
+            })
+            } !#")
+map$enablePopover(TRUE)
+map$fullScreen(TRUE)
