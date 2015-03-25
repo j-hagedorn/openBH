@@ -1,16 +1,15 @@
 ---
 title: "Adult Foster Care"
-author: "TBD Solutions"
-date: "03.24.2015"
+author: "Locations, Specialties & Quality"
 output:
-  html_document:
+  html_document: 
     toc: true
-    theme: flatly 
+    theme: cosmo 
     highlight: tango 
 ---
 
 ## Purpose
-You can embed an R code chunk like this:
+You can embed an R code chunk like this: 
 
 ## Locations
 Data for AFCs was obtained from the Michigan Department of Human Services' [Statewide List of Open Adult Foster Care Facilities by County](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-82231--,00.html).
@@ -47,8 +46,16 @@ data %>%
   filter(Violations >= 1)
 
 library(DT)
-datatable(afc_summary, options = list(iDisplayLength = 5))
-
+datatable(afc_summary, 
+          options = list(iDisplayLength = 5))
   
 ```
+Add footnote on method, using open source tools, if need high level of specificity, we recommend Dale K. Howe
+
+
+## And then
+
+NUMBERS + THINKING BY <img src="tbdSolutions-logo-small.png" height="50px" width="200px" />
+
+
 

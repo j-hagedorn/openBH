@@ -24,4 +24,17 @@ library(DT)
     datatable(options = list(iDisplayLength = 5))
     
   
+  datatable(options = list(), 
+              class = "display", 
+              callback = JS("return table;"), 
+              rownames, 
+              colnames, 
+              container, 
+              caption = NULL, 
+              filter = c("none", "bottom", "top"), 
+              server = FALSE, 
+              escape = TRUE, 
+              extensions = list()
+              )
+  
   
