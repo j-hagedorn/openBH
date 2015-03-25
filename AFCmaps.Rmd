@@ -1,0 +1,54 @@
+---
+title: "Adult Foster Care"
+author: "TBD Solutions"
+date: "03.24.2015"
+output:
+  html_document:
+    toc: true
+    theme: flatly 
+    highlight: tango 
+---
+
+## Purpose
+You can embed an R code chunk like this:
+
+## Locations
+Data for AFCs was obtained from the Michigan Department of Human Services' [Statewide List of Open Adult Foster Care Facilities by County](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-82231--,00.html).
+```{r, echo= FALSE, message=FALSE}
+# Load data 
+# Read from file
+data <- read.csv("data/afc.csv")
+
+library(leaflet)
+library(dplyr)
+  
+  leaflet(data) %>% 
+    addTiles(urlTemplate = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
+             attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>% # (urlTemplate = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png") %>%
+    addCircles() %>% 
+    setView(-85.373016, 43.808709, zoom = 7)
+
+```
+
+## Data Source
+Data for AFCs was obtained from the Michigan Department of Human Services' [Statewide List of Open Adult Foster Care Facilities by County](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-82231--,00.html).  You can sort and search the data in the table below:
+
+```{r, echo= FALSE, message=FALSE}
+library(car)
+data$Violate <- data$ViolationsPastYr == "YES"
+data$Violate <- as.numeric(data$Violate)
+
+afc_summary <-
+data %>%
+  group_by(Licensee) %>%
+  summarise(Homes = n(),
+            Violations = sum(Violate)) %>%
+  arrange(desc(Violations)) %>%
+  filter(Violations >= 1)
+
+library(DT)
+datatable(afc_summary, options = list(iDisplayLength = 5))
+
+  
+```
+

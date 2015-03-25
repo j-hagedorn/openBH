@@ -37,10 +37,6 @@ afc %>%
   mutate(GeoAddress = str_trim(paste(SuppAddress,Street,City,State,Zip,", usa", sep = " "))) %>%
   select(LicenseNo, GeoAddress)
 
-# Write to file
-write.csv(afc, file = "data/afc.csv")
-
-
 # Add lat/long of addresses
 
 # Define addresses variable for use in function
@@ -86,26 +82,45 @@ data <-
 afc %>%
   inner_join(data, by = "LicenseNo")
 
+# Write to file
+write.csv(data, file = "data/afc.csv")
 
-# Use rCharts leaflet
-library(rCharts)
-map <- Leaflet$new()
-map$setView(c(43.808709, -85.373016), 
-            zoom = 7)
-map$tileLayer(provider = 'Stamen.TonerLite')
-#map$marker(data$lat, data$long, bindPopup = data$FacilityName)
-map$geoJson(toGeoJSON(data_), 
-            onEachFeature = '#! function(feature, layer){
-      layer.bindPopup(feature.properties.popup)
-            } !#',
-            pointToLayer =  "#! function(feature, latlng){
-            return L.circleMarker(latlng, {
-            radius: 4,
-            fillColor: feature.properties.fillColor || 'red',    
-            color: '#000',
-            weight: 1,
-            fillOpacity: 0.8
-            })
-            } !#")
-map$enablePopover(TRUE)
-map$fullScreen(TRUE)
+
+library(car)
+data$Violate <- data$ViolationsPastYr == "YES"
+data$Violate <- as.numeric(data$Violate)
+
+
+afc_summary <-
+data %>%
+  group_by(Licensee) %>%
+  summarise(Homes = n(),
+            Violations = sum(Violate)) %>%
+  arrange(desc(Violations)) %>%
+  filter(Violations >= 1)
+
+library(DT)
+datatable(afc_summary, options = list(iDisplayLength = 5))
+
+# # Use rCharts leaflet
+# library(rCharts)
+# map <- Leaflet$new()
+# map$setView(c(43.808709, -85.373016), 
+#             zoom = 7)
+# map$tileLayer(provider = 'Stamen.TonerLite')
+# #map$marker(data$lat, data$long, bindPopup = data$FacilityName)
+# map$geoJson(toGeoJSON(data_), 
+#             onEachFeature = '#! function(feature, layer){
+#       layer.bindPopup(feature.properties.popup)
+#             } !#',
+#             pointToLayer =  "#! function(feature, latlng){
+#             return L.circleMarker(latlng, {
+#             radius: 4,
+#             fillColor: feature.properties.fillColor || 'red',    
+#             color: '#000',
+#             weight: 1,
+#             fillOpacity: 0.8
+#             })
+#             } !#")
+# map$enablePopover(TRUE)
+# map$fullScreen(TRUE)
