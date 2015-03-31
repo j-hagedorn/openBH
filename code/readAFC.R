@@ -86,18 +86,41 @@ afc %>%
 write.csv(data, file = "data/afc.csv")
 
 
-library(car)
-data$Violate <- data$ViolationsPastYr == "YES"
-data$Violate <- as.numeric(data$Violate)
+# Create logical variables (so we can easily make them numeric!)
+data$ServePhysHandicap <- data$ServePhysHandicap == "Y"
+data$ServeDD <- data$ServeDD == "Y"
+data$ServeMI <- data$ServeMI == "Y"
+data$ServeAged <- data$ServeAged == "Y"
+data$ServeTBI <- data$ServeTBI == "Y"
+data$ServeAlzheimers <- data$ServeAlzheimers == "Y"
+data$ViolationsPastYr <- data$ViolationsPastYr == "YES"
+data$Provisionals <- data$Status %in% c("1ST PROVISIONAL","2ND PROVISIONAL")
 
+
+# Summary per licensee
 
 afc_summary <-
 data %>%
   group_by(Licensee) %>%
   summarise(Homes = n(),
-            Violations = sum(Violate)) %>%
+            Beds = sum(Capacity),
+            BedsPerHome = round(sum(Capacity)/n(), digits = 1),
+            Violations = sum(as.numeric(ViolationsPastYr)),
+            Provisionals = sum(as.numeric(Provisionals)),
+            PctDD = round(sum(as.numeric(ServeDD))/n()*100, digits = 1),
+            PctMI = round(sum(as.numeric(ServeMI))/n()*100, digits = 1)
+            ) %>%
   arrange(desc(Violations)) %>%
-  filter(Violations >= 1)
+  filter(Violations >= 1
+         | Provisionals >= 1)
+
+
+# Summary By Type
+data %>%
+  group_by(TypeDesc) %>%
+  summarise(Homes = n(),
+            Beds = sum(Capacity),
+            BedsPerHome = round(sum(Capacity)/n(), digits = 1))
 
 library(DT)
 datatable(afc_summary, options = list(iDisplayLength = 5))

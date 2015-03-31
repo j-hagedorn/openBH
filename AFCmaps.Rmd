@@ -53,7 +53,13 @@ datatable(afc_summary,
 Add footnote on method, using open source tools, if need high level of specificity, we recommend Dale K. Howe
 
 
-## And then
+## Homes by disability type
+
+## Homes by number of beds (related to final rule stipulations)
+
+## Companies owning multiple homes
+
+## Violations by Licensee
 
 NUMBERS + THINKING BY <img src="tbdSolutions-logo-small.png" height="50px" width="200px" />
 
