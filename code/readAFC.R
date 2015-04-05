@@ -98,6 +98,21 @@ data$SpecialCertMI <- data$SpecialCertMI == "Y"
 data$ViolationsPastYr <- data$ViolationsPastYr == "YES"
 data$Provisionals <- data$Status %in% c("1ST PROVISIONAL","2ND PROVISIONAL")
 
+# Make Factor variable for DD, MI
+  data$DDMI <- paste(data$ServeDD,data$ServeMI,
+                     sep = "|")
+  library(car)
+  data$DDMI <- recode(data$DDMI, "'FALSE|TRUE'='MI'; 
+                                 'TRUE|FALSE'='DD';
+                                 'TRUE|TRUE'='DD|MI';
+                                  else = NA")
+  data$DDMI <- as.factor(data$DDMI)
+
+data$Populations <- paste(data$ServeDD,data$ServeMI,
+                          data$ServeTBI,data$ServeAged,
+                          data$ServePhysHandicap,data$ServeAlzheimers,
+                          sep = "|")
+
 
 # Summary per licensee
 
@@ -117,8 +132,48 @@ data %>%
          | Provisionals >= 1)
 
 
-# Summary By Disability Type
 
+# Summary By Disability Type
+afc_pop <-
+data %>%
+  filter(!is.na(DDMI)) %>%
+  group_by(DDMI, TypeDesc) %>%
+  summarise(Homes = n(),
+            Beds = sum(Capacity),
+            BedsPerHome = round(sum(Capacity)/n(), digits = 1),
+            Violations = sum(as.numeric(ViolationsPastYr)),
+            Provisionals = sum(as.numeric(Provisionals)))
+
+library(rCharts)
+a1 <- 
+  nPlot(Homes ~ TypeDesc, 
+        group = "DDMI", 
+        data = afc_pop, 
+        type = "multiBarChart" ,  #"multiBarChart" 'lineChart' # OR 'lineWithFocusChart' #'stackedAreaChart'
+        id = "chart")
+a1$xAxis(axisLabel = 'Setting Type', width = 62)
+a1$yAxis(axisLabel = 'Selected measure', width = 62)
+#a1$chart(reduceXTicks = FALSE)
+#a1$xAxis(staggerLabels = TRUE)
+a1$chart(color = c("#3B9AB2", "#78B7C5", "#EBCC2A", "#E1AF00", "#F21A00"),
+         forceY = c(0,100)) 
+a1$addControls("y", 
+                value = "Homes", 
+                values = c("Homes","Beds","BedsPerHome"))
+a1$show('iframesrc',cdn=TRUE)
+#a1$show('inline', include_assets = TRUE, cdn = TRUE)
+
+data %>%
+  group_by(TypeDesc) %>%
+  summarise(Beds = sum(Capacity),
+            MIbeds = sum(Capacity[ServeMI == T]),
+            DDbeds = sum(Capacity[ServeDD == T]),
+            TBIbeds = sum(Capacity[ServeTBI == T]),
+            Agedbeds = sum(Capacity[ServeAged == T]),
+            Physbeds = sum(Capacity[ServePhysHandicap == T]),
+            Alzbeds = sum(Capacity[ServeAlzheimers == T])
+            ) %>%
+  
 
 # Summary By Beds
 
