@@ -31,7 +31,6 @@ library(dplyr)
 
 ## Data Source
 Data for AFCs was obtained from the Michigan Department of Human Services' [Statewide List of Open Adult Foster Care Facilities by County](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-82231--,00.html).  You can sort and search the data in the table below:
-
 ```{r, echo= FALSE, message=FALSE}
 library(car)
 data$Violate <- data$ViolationsPastYr == "YES"
@@ -52,16 +51,36 @@ datatable(afc_summary,
 ```
 Add footnote on method, using open source tools, if need high level of specificity, we recommend Dale K. Howe
 
+## Context: Medicaid HCBS Final Rule
+In January 2014, Centers for Medicare and Medicaid Services (CMS) issued a "[final rule](https://federalregister.gov/a/2014-00487)" to ensure that individuals receiving services and supports through Medicaid’s Home and Community Based Services (HCBS) programs have  access to community living and receive services in integrated settings. States may only use Medicaid HCBS funds for settings which meet the qualities for being home and community-based, based on a heightened scrutiny process (see [Section 441.301(c)(5)(v)](https://www.federalregister.gov/articles/2014/01/16/2014-00487/medicaid-program-state-plan-home-and-community-based-services-5-year-period-for-waivers-provider#p-1514)).
+
+Guidance from CMS states that "the following two characteristics alone might, but will not necessarily, meet the criteria for having the effect of isolating individuals:
+
+* The setting is designed specifically for people with disabilities, and often even for people with a certain type of disability.
+* The individuals in the setting are primarily or exclusively people with disabilities and on-site staff provides many services to them. 
+
+Additional guidance has been provided to help [evaluate residential settings](http://www.medicaid.gov/medicaid-chip-program-information/by-topics/long-term-services-and-supports/home-and-community-based-services/downloads/exploratory-questions-re-settings-characteristics.pdf) in the light of these requirements.
+
+With the [recent creation](http://www.legislature.mi.gov/documents/2015-2016/executiveorder/pdf/2015-EO-04.pdf) of Michigan's Department of Health and Human Services (DHHS) in February 2015, the state may be poised to manage this transition to community living even more effectively than previously.  The department was created through a merger of the Department of Community Health (DCH), which administers Medicaid funds, and Department of Human Services (DHS), which regulates Adult Foster Care licensing for residential settings.
 
 ## Homes by disability type
 
-## Homes by number of beds (related to final rule stipulations)
+
+## Homes by number of beds 
+While the HCBS regulations do not specify size, "states may set a higher threshold...including the option to establish size restrictions and limitations" ([HCBS Q & A](http://www.medicaid.gov/medicaid-chip-program-information/by-topics/long-term-services-and-supports/home-and-community-based-services/downloads/q-and-a-hcb-settings.pdf)).
+
+```{r, echo= FALSE, message=FALSE}
+
+
+```
+
 
 ## Companies owning multiple homes
 
 ## Violations by Licensee
 
-NUMBERS + THINKING BY <img src="tbdSolutions-logo-small.png" height="50px" width="200px" />
+
+VISUALS + THINKING BY <img src="tbdSolutions-logo-small.png" height="50px" width="200px" />
 
 
 

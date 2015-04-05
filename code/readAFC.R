@@ -93,6 +93,8 @@ data$ServeMI <- data$ServeMI == "Y"
 data$ServeAged <- data$ServeAged == "Y"
 data$ServeTBI <- data$ServeTBI == "Y"
 data$ServeAlzheimers <- data$ServeAlzheimers == "Y"
+data$SpecialCertDD <- data$SpecialCertDD == "Y"
+data$SpecialCertMI <- data$SpecialCertMI == "Y"
 data$ViolationsPastYr <- data$ViolationsPastYr == "YES"
 data$Provisionals <- data$Status %in% c("1ST PROVISIONAL","2ND PROVISIONAL")
 
@@ -115,13 +117,29 @@ data %>%
          | Provisionals >= 1)
 
 
-# Summary By Type
+# Summary By Disability Type
+
+
+# Summary By Beds
+
+devtools::install_github("hrbrmstr/metricsgraphics")
+library(metricsgraphics)
+
 data %>%
   group_by(TypeDesc) %>%
   summarise(Homes = n(),
             Beds = sum(Capacity),
             BedsPerHome = round(sum(Capacity)/n(), digits = 1))
+data %>%
+  mjs_plot(x=Capacity, width=500, height=400) %>%
+  mjs_histogram(bins = 30)
 
+
+tmp %>%
+  mjs_plot(x=Beds, width=500, height=400) %>%
+  mjs_histogram(bins = NULL)
+
+# Make a data table
 library(DT)
 datatable(afc_summary, options = list(iDisplayLength = 5))
 
