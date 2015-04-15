@@ -1,36 +1,69 @@
 ---
-title: "Adult Foster Care"
+title: "Residential Treatment in Michigan"
 author: "Locations, Specialties & Quality"
-output:
-  html_document: 
+output:  
+  html_document:
     toc: true
     theme: cosmo 
-    highlight: tango 
+    highlight: tango
 ---
-
-## Purpose
-You can embed an R code chunk like this: 
+```{r, echo= FALSE, message=FALSE}
+library(dplyr)
+library(htmlwidgets)
+library(sparkline)
+```
 
 ## Locations
-Data for AFCs was obtained from the Michigan Department of Human Services' [Statewide List of Open Adult Foster Care Facilities by County](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-82231--,00.html).
+Adult Foster Care homes are spread across the state of Michigan
 ```{r, echo= FALSE, message=FALSE}
 # Load data 
 # Read from file
 data <- read.csv("data/afc.csv")
 
+# Create logical variables (so we can easily make them numeric!)
+data$ServePhysHandicap <- data$ServePhysHandicap == "Y"
+data$ServeDD <- data$ServeDD == "Y"
+data$ServeMI <- data$ServeMI == "Y"
+data$ServeAged <- data$ServeAged == "Y"
+data$ServeTBI <- data$ServeTBI == "Y"
+data$ServeAlzheimers <- data$ServeAlzheimers == "Y"
+data$SpecialCertDD <- data$SpecialCertDD == "Y"
+data$SpecialCertMI <- data$SpecialCertMI == "Y"
+data$ViolationsPastYr <- data$ViolationsPastYr == "YES"
+data$Provisionals <- data$Status %in% c("1ST PROVISIONAL","2ND PROVISIONAL")
+
+# Recode bed capacity in ranges
+  library(car)
+  data$BedRange <- recode(data$Capacity,
+                         "1:6 = '01-06 beds'; 
+                          7:12 ='07-12 beds';
+                          13:20 = '13-20 beds';
+                          else = '21+ beds'")
+  data$BedRange <- as.factor(data$BedRange)
+
+# Make Factor variable for DD, MI
+  data$DDMI <- paste(data$ServeDD,data$ServeMI,
+                     sep = "|")
+  data$DDMI <- recode(data$DDMI, "'FALSE|TRUE'='MI'; 
+                                 'TRUE|FALSE'='DD';
+                                 'TRUE|TRUE'='DD|MI';
+                                  else = 'Other'")
+  data$DDMI <- as.factor(data$DDMI)
+
+```
+
+```{r, echo= FALSE, message=FALSE}
 library(leaflet)
-library(dplyr)
   
   leaflet(data) %>% 
     addTiles(urlTemplate = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
              attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>% # (urlTemplate = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png") %>%
     addCircles() %>% 
     setView(-85.373016, 43.808709, zoom = 7)
-
 ```
 
 ## Data Source
-Data for AFCs was obtained from the Michigan Department of Human Services' [Statewide List of Open Adult Foster Care Facilities by County](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-82231--,00.html).  You can sort and search the data in the table below:
+Data for Adult Foster Care homes (AFCs) was obtained from the Michigan Department of Human Services' [Statewide List of Open Adult Foster Care Facilities by County](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-82231--,00.html).[^1] AFC data was last downloaded on `r max(as.Date(data$Downloaded))`.
 ```{r, echo= FALSE, message=FALSE}
 library(car)
 data$Violate <- data$ViolationsPastYr == "YES"
@@ -47,9 +80,9 @@ data %>%
 library(DT)
 datatable(afc_summary, 
           options = list(iDisplayLength = 5))
-  
 ```
-Add footnote on method, using open source tools, if need high level of specificity, we recommend Dale K. Howe
+
+Data for service utilization and cost were taken from the Michigan Department of Community Health's 2013 [CMHSP Sub-element Cost Reports for Section 404](http://www.michigan.gov/mdch/0,4612,7-132-2941_4868_4902-256889--,00.html), augmented in the [open404](https://github.com/j-hagedorn/open404) format.
 
 ## Context: Medicaid HCBS Final Rule
 In January 2014, Centers for Medicare and Medicaid Services (CMS) issued a "[final rule](https://federalregister.gov/a/2014-00487)" to ensure that individuals receiving services and supports through Medicaid’s Home and Community Based Services (HCBS) programs have  access to community living and receive services in integrated settings. States may only use Medicaid HCBS funds for settings which meet the qualities for being home and community-based, based on a heightened scrutiny process (see [Section 441.301(c)(5)(v)](https://www.federalregister.gov/articles/2014/01/16/2014-00487/medicaid-program-state-plan-home-and-community-based-services-5-year-period-for-waivers-provider#p-1514)).
@@ -63,24 +96,217 @@ Additional guidance has been provided to help [evaluate residential settings](ht
 
 With the [recent creation](http://www.legislature.mi.gov/documents/2015-2016/executiveorder/pdf/2015-EO-04.pdf) of Michigan's Department of Health and Human Services (DHHS) in February 2015, the state may be poised to manage this transition to community living even more effectively than previously.  The department was created through a merger of the Department of Community Health (DCH), which administers Medicaid funds, and Department of Human Services (DHS), which regulates Adult Foster Care licensing for residential settings.
 
+## Medicaid Spending and Use of Residential Services
+Medicaid spending for residential services within Michigan's public behavioral health system has risen in recent years `r sparkline(res$CostInMillions, type = 'line')`, as evidenced by multiple cost metrics. The chart below includes the following measures:
+
+* Total Cost (_CostInMillions_): the total cost of residential services[^2], in millions of dollars
+* Population-adjusted Cost (_Cost1kServed_): for every 1,000 people to whom the public behavioral health system provided _any_ service, this was the amount that was spent on this particular set of services.
+* Residents: the estimated number of people receiving residential services.[^3]
+* Cost per resident (_ResidentCost_): the average cost per person receiving residential services.
+
+```{r, echo=FALSE,results='asis', warning=FALSE ,comment=NA, message=FALSE}
+# Load data 
+library(RCurl) # requires install.packages("RCurl")
+  d <- getURL("https://raw.githubusercontent.com/j-hagedorn/open404/master/data/clean/subMaster",ssl.verifypeer=0L, followlocation=1L)
+  writeLines(d,'temp.csv')
+  subMaster <- read.csv('temp.csv')
+  rm(d)
+
+# ... and create a subset
+library(dplyr)
+res <- 
+subMaster %>%
+  group_by(FY,Service,Code_Mod,CMHSP) %>%
+  summarise(SumOfCost = sum(SumOfCost),
+            TotalServed = max(TotalServed),
+            ResCases = sum(SumOfCases[Code_Mod %in% c("T1020","T1020TF","T1020TG","S9976")])) %>%
+  filter(Service == "Residential Treatment") %>%
+  ungroup %>%
+  group_by(FY,Service) %>%
+  summarise(CostInMillions = round(sum(SumOfCost)/1000000, digits = 1),
+            Cost1kSvd = round((sum(SumOfCost)/sum(TotalServed)*1000), digits = 2),
+            Residents = sum(ResCases),
+            ResidentCost = round(sum(SumOfCost)/sum(ResCases), digits = 1)
+            ) %>%
+  droplevels
+
+library(rCharts)
+reschart <- nPlot(CostInMillions ~ FY, 
+                 group = "Service", 
+                 data = res, 
+                 type = 'lineChart', id = 'chart')
+reschart$xAxis(axisLabel = 'Year', width = 62)
+reschart$yAxis(axisLabel = 'Selected measure:', width = 62)
+#reschart$chart(forceY = c(0, 580))
+reschart$addControls("y", 
+                     value = "CostInMillions", 
+                     values = c("CostInMillions","Cost1kSvd",
+                                "Residents","ResidentCost"))
+reschart$show('iframesrc',cdn=TRUE)
+
+```
+<style>iframe.rChart{height: 550px;width: 800px}</style>
+
+Individuals receiving Medicaid funding for residential services during 2013 could fill `r round(sum(res$Residents[res$FY == 2013])/sum(afc_pop$Beds[afc_pop$DDMI != "Other"])*100, digits = 1)`% of currently available AFC beds which serve individuals with mental illness (MI) or developmental disability (DD).
+
 ## Homes by disability type
+Buildings have played an important role in the history of disabilities such as mental illness, both as a means and symbol of separation from society.[^4] If settings that isolate can be characterized as housing "exclusively people with disabilities and on-site staff provides many services to them," this poses a challenge to the current model of residential treatment, which has [specialty certificates](http://michigan.gov/documents/dhs/BCAL-PUB-0336_214333_7.pdf?20140414155325) for serving people with mental illness or developmental disabilities.
+
+The chart below allows viewers to look at the number of homes, beds and the average beds per home for different types of disability that AFC homes identify themselves as specializing in.  Since an AFC can select multiple disabilities, some are marked with more than one population group.  Mental illness and developmental disabilities are detailed here, since these are populations served by the public behavioral health system using Medicaid funds. Abbreviations include:
+
+* __MI__ : Mental illness
+* __DD__ : Developmental disability
+* __DD|MI__ : Both developmental disability and mental illness (as well as other conditions, potentially)
+* __Other__: Any combination of one or more of the following: traumatic brain injury (TBI), physical handicap, Alzheimer's disease, and older adults.
+
+```{r, echo=FALSE,results='asis', warning=FALSE ,comment=NA, message=FALSE}
+afc_pop <-
+plyr::ddply(data, c("DDMI","TypeDesc"), summarise, 
+            Homes = length(LicenseNo),
+            Beds = sum(Capacity),
+            BedsPerHome = round(sum(Capacity)/length(LicenseNo), digits = 1),
+            .drop=FALSE)
+
+library(rCharts)
+a1 <- 
+  nPlot(Homes ~ TypeDesc, 
+        group = "DDMI", 
+        data = afc_pop, 
+        type = "multiBarChart" ,  #"multiBarChart" 'lineChart' # OR 'lineWithFocusChart' #'stackedAreaChart'
+        id = "chart")
+a1$xAxis(axisLabel = 'Setting Type', width = 62)
+a1$yAxis(axisLabel = 'Selected measure', width = 62)
+a1$chart(color = c("#3B9AB2", "#78B7C5", "#EBCC2A", "#E1AF00", "#F21A00"),
+         forceY = c(0,100)) 
+a1$addControls("y", 
+                value = "Homes", 
+                values = c("Homes","Beds","BedsPerHome"))
+a1$show('iframesrc',cdn=TRUE)
+
+```
+<style>iframe.rChart{height: 550px;width: 800px}</style>
 
 
 ## Homes by number of beds 
-While the HCBS regulations do not specify size, "states may set a higher threshold...including the option to establish size restrictions and limitations" ([HCBS Q & A](http://www.medicaid.gov/medicaid-chip-program-information/by-topics/long-term-services-and-supports/home-and-community-based-services/downloads/q-and-a-hcb-settings.pdf)).
+While the HCBS regulations do not set a specific limit on the size of a facility, "states may set a higher threshold...including the option to establish size restrictions and limitations" ([HCBS Q & A](http://www.medicaid.gov/medicaid-chip-program-information/by-topics/long-term-services-and-supports/home-and-community-based-services/downloads/q-and-a-hcb-settings.pdf)).  CMS acknowledges that size is an important factor and that it "[may identify...qualities, including...size](https://www.federalregister.gov/articles/2014/01/16/2014-00487/medicaid-program-state-plan-home-and-community-based-services-5-year-period-for-waivers-provider#p-358)" which will trigger heightened scrutiny in their review.
 
-```{r, echo= FALSE, message=FALSE}
+```{r, echo=FALSE,results='asis', warning=FALSE ,comment=NA, message=FALSE}
+afc_beds <- data %>% filter(DDMI %in% c("MI","DD","DD|MI"))
+  afc_beds <-
+  plyr::ddply(afc_beds, c("BedRange","TypeDesc"), summarise, 
+              Homes = length(LicenseNo),
+              Beds = sum(Capacity), 
+              .drop=FALSE)
 
-
+b1 <- 
+  nPlot(Homes ~ BedRange, 
+        group = "TypeDesc", 
+        data = afc_beds, 
+        type = "multiBarChart" ,  #"multiBarChart" 'lineChart' # OR 'lineWithFocusChart' #'stackedAreaChart'
+        id = "chart")
+b1$xAxis(axisLabel = 'Beds in facility', width = 62)
+b1$yAxis(axisLabel = 'AFCs serving people with MI and/or DD', width = 62)
+b1$chart(color = c("#FF0000", "#00A08A", "#F2AD00", "#F98400", "#5BBCD6","#ECCBAE", "#046C9A", "#D69C4E", "#ABDDDE", "#000000"),
+         stacked = TRUE) 
+b1$show('iframesrc',cdn=TRUE)
 ```
-
+<style>iframe.rChart{height: 550px;width: 800px}</style>
 
 ## Companies owning multiple homes
+A number of companies operate multiple residential facilities throughout the state.  The table below shows the top 25 licensees of facilities for mental illness and/or developmental disabilities, ranked by the number of homes they operate.  It is worth noting that some companies license homes under multiple names (e.g. Adult Learning Systems, Hope Networ), so that the true number of facilities operated by these entities is larger than that of any subsidiary licensee.
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+library(scales)
+library(pander)
+
+afc_summary <-
+data %>%
+  filter(DDMI %in% c("MI","DD","DD|MI")) %>%
+  group_by(Licensee) %>%
+  summarise(Homes = n(),
+            BedsPerHome = round(sum(Capacity)/n(), digits = 1)
+            ) %>%
+  top_n(25,Homes) %>%
+  arrange(desc(Homes)) %>%
+  droplevels
+
+pander(afc_summary, style = 'rmarkdown')
+```
 
 ## Violations by Licensee
+Licensed facilities must adhere to [Licensing Rules and Statutes](http://www.michigan.gov/dhs/0,4562,7-124-5455_27716_27717-327086--,00.html), and are cited for rule violations if they fail to do so.  Licensing rules cover areas such as:
+
+* Resident rights
+* Protection and safety
+* Prohibited behavior interventions
+* Health care
+* Environmental conditions
+
+The scatterplot chart below displays the following for each licensee which serves individuals with mental illness and/or developmental disabilities:
+
+* Number of facilities with provisional licenses[^5] (y-axis, top to bottom)
+* Number of facilities with violations in the past year (x-axis, left to right)
+
+To find licensees who may have concerning record of rule violations or provisional licensure, you can begin by looking for points on the top or right of the chart.
+
+(*Note*: The points on this plot are spread out a bit in order to allow you to view each one separately.  So, all of the points near the "1" mark have 1 violation, and so on.  You can click on specific ranges of homes at top right and then hover over the points on the plot to find out additional information, such as name of Licensee, percentage of facilities with violations, etc.)
+```{r, echo=FALSE,results='asis', warning=FALSE ,comment=NA, message=FALSE}
+afc_viol <-
+  data %>%
+  filter(DDMI %in% c("MI","DD","DD|MI")) %>%
+  group_by(Licensee) %>%
+  summarise(Homes = n(),
+            Beds = sum(Capacity),
+            BedsPerHome = round(sum(Capacity)/n(), digits = 1),
+            Violations = sum(as.numeric(ViolationsPastYr)),
+            Provisionals = sum(as.numeric(Provisionals)),
+            PctDD = round(sum(as.numeric(ServeDD))/n()*100, digits = 1),
+            PctMI = round(sum(as.numeric(ServeMI))/n()*100, digits = 1)) %>%
+  mutate(PctViol = round(Violations/Homes*100, digits = 1),
+         PctProv = round(Provisionals/Homes*100, digits = 1)) %>%
+  filter(Violations >= 1 | Provisionals >= 1)
+
+afc_viol$HomeRange <- recode(afc_viol$Homes,
+                            "1:5 = '01-05 homes'; 
+                            6:10 ='06-10 homes';
+                            11:15 = '11-15 homes';
+                            16:20 = '16-20 homes';
+                            21:25 = '21-25 homes';
+                            else = '26+ homes'")
+afc_viol$HomeRange <- factor(afc_viol$HomeRange)
+afc_viol$HomeRange <- ordered(afc_viol$HomeRange,
+                              levels = c("01-05 homes", "06-10 homes", 
+                                         "11-15 homes", "16-20 homes",
+                                         "21-25 homes", "26+ homes"))
+afc_viol$jitterProv <- round(jitter(afc_viol$Provisionals), digits = 1)
+afc_viol$jitterViol <- round(jitter(afc_viol$Violations), digits = 1)
 
 
-VISUALS + THINKING BY <img src="tbdSolutions-logo-small.png" height="50px" width="200px" />
+d1 <- nPlot(jitterProv ~ jitterViol, group = "HomeRange", 
+            data = afc_viol, type = 'scatterChart')
+d1$xAxis(axisLabel = 'Homes with violations in past year', width = 62)
+d1$yAxis(axisLabel = 'Homes with provisional licenses', width = 62)
+d1$chart(tooltipContent = "#! function(key, x, y, e){ 
+             return '<b>Licensee:</b> ' + e.point.Licensee + '<br/>' +
+             '<b>Homes with violations: </b>' + e.point.Violations + '<br/>' +
+             '<b>Homes with provisionals: </b>' + e.point.Provisionals + '<br/>' +
+             '<b># Homes: </b>' + e.point.Homes + '<br/>' +
+             '<b>Beds per home: </b>' + e.point.BedsPerHome + '<br/>' +
+             '<b>% homes with violations: </b>' + e.point.PctViol + '<br/>' +
+             '<b>% homes with provisional: </b>' + e.point.PctProv 
+             } !#",
+         color = c("#fcbba1", "#ef3b2c", "#fc9272", "#99000d", "#cb181d","#fb6a4a"))
+d1$show('iframesrc',cdn=TRUE)
+```
+<style>iframe.rChart{height: 550px;width: 800px}</style>
 
 
+VISUALS + THINKING BY [<img src="tbdSolutions-logo-small.png" height="50px" width="200px" />](http://www.tbdsolutions.com/)
 
+
+## Notes
+[^1]: In order to geomap the addresses of residential homes, we [used open source packages](https://github.com/j-hagedorn/openBH/blob/master/code/readAFC.R#L32), if need high level of specificity, we recommend Dale K. Howe Consulting, LLC.
+[^2]: Cost of Medicaid residential services was calculated by taking the sum of cost for the following service codes: H2016, T1020, S9976, H0019. 
+[^3]: Sum of people served using the following services codes: T1020, S9976.  While daily community living supports services (H2016) are also provided in residential facilities, these are commonly provided in combination with other residential codes. It is worth noting that individual recipients may be counted multiple times by the 404 report if they received T1020 services with multiple level-of-intensity modifiers.
+[^4]: See, for instance, Michel Foucault's discussion of the French Hopital General in his chapter on "The Great Confinement" in *Madness and Civilization: A History of Insanity in the Age of Reason*.
+[^5]: Provisional licensure is given to licensees who are "unable to conform to the requirements ... for a regular license " [Act 218 of 1979 40.717 Provisional license](http://www.legislature.mi.gov/(S(pnivcixstfk3m22e1fg0b3uo))/mileg.aspx?page=getObject&objectName=mcl-400-717)
