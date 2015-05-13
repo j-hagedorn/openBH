@@ -46,14 +46,12 @@ tst <- acs.fetch(endyear = 2012,
 #####
 
 tst <- data.frame(estimate(tst))
-colnames(MI_df_13)=c("TotalPop","Under18")
+colnames(MI_df_13)= c("TotalPop","Under18")
 MI_df_13$Year <- 2013  #add year variable
 MI_df_13$County <- rownames(MI_df_13) #create new var using rownames
 rownames(MI_df_13) <- NULL #nullify existing rownames
   
 
-  
-  
 # To search variables
   # Use: http://www2.census.gov/acs2013_5yr/summaryfile/UserTools/ACS_2013_SF_5YR_Appendices.xls
 acs.lookup(endyear = 2013, 
