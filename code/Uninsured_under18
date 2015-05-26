@@ -1,0 +1,19 @@
+library(MASS)
+library(dplyr)
+
+Family_Size<-read.csv("C:\\Users\\Joseph\\Documents\\GitHub\\openBH\\data\\Average Fam Size.csv")
+Uninsured<-read.csv("C:\\Users\\Joseph\\Documents\\GitHub\\openBH\\Uninsured.csv")
+
+
+Family_Size<-tbl_df(Family_Size)
+Uninsured<-tbl_df(Uninsured)
+
+Family_Size<-Family_Size%>%select(GEO.id2,HC02_EST_VC10,HC03_EST_VC10,HC04_EST_VC10)
+Uninsured<-Uninsured%>%select(GEO.id2,HC02_EST_VC04)
+
+Both_merged<-merge(Family_Size,Uninsured)
+Uninsured_Children<-select(Both_merged,FIPS=GEO.id2,
+                           Number_of_uninsured_under18=HC02_EST_VC04,
+                           Married_Couples_with_Children_under18=HC02_EST_VC10,
+                           Single_father_with_Children_under18=HC03_EST_VC10,
+                           Single_mother_with_children_under18=HC04_EST_VC10)
