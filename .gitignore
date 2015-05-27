@@ -3,3 +3,7 @@
 .RData
 *.asc
 *.csv
+*.txt
+*.xls
+*.xlsx
+*.pdf
