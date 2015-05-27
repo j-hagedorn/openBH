@@ -1,0 +1,6 @@
+temp <- tempfile()
+download.file("http://www.cms.gov/apps/ama/license-2011.asp?file=http:
+              //download.cms.gov/Research-Statistics-Data-and-Systems
+              /Statistics-Trends-and-Reports/Medicare-Provider-Charge-Dat/Downloads/Medicare-Physician-and-Other-Supplier-PUF-CY2012.zip",temp)
+data <- read.table(unz(temp,"Medicare-Physician-and-Other-Supplier-PUF-CY2012.txt"))
+unlink(temp)
