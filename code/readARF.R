@@ -68,3 +68,12 @@
   arf.sub$dataset <- "ARF"
   arf.sub$dataset_yr <- 2013
   
+  # Create reference table
+  library(readxl)
+  ahrf_ref <- read_excel("doc/ahrf/AHRF 2013-2014 Technical Documentation.xlsx",
+                         skip = 182)
+  
+  ahrf_ref <-
+    ahrf_ref %>%
+    filter(!is.na("COL-COL") & !is.na(CHARACTERISTICS))
+  
