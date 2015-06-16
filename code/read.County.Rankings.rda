@@ -43,9 +43,12 @@ download.file("http://www.countyhealthrankings.org/sites/default/files/state/dow
 #Merge the files into one and save
 x<-merge(County15,County14)
 County.Health.Factor.Rankings<-merge(x,County13)
-save("County.Health.Rankings",file="County.Health.Rankings.rda")
+save("County.Health.Factor.Rankings",file="County.Health.Factor.Rankings.rda")
 
 #cleanup and set WD back to default home directory 
 rm(x,County15,County14,County13)
 setwd("~/")
+
+
+
 
