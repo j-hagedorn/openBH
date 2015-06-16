@@ -9,11 +9,11 @@ setwd("~/CountyHealthRankings")
 #Grabbing the excell file from the website for the last 3 years
 
 County15<-read.xls("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2015%20County%20Health%20Rankings%20Michigan%20Data%20-%20v1_0.xls",
-                 sheet=2)
+                   sheet=2)
 County14<-read.xls("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2014%20County%20Health%20Rankings%20Michigan%20Data%20-%20v3.xls",
                    sheet=2)
 County13<-read.xls("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2013%20County%20Health%20Ranking%20Michigan%20Data%20-%20v1_0.xls",
-                  sheet=2)
+                   sheet=2)
 
 #Filtering data to variables of interest 
 County15<-select(County15,FIPS=X,County=X.2,"2015.County.Health.Factor.Ranking"=X.4)
@@ -25,19 +25,19 @@ County13<-County13[c(3:85), ]
 
 #Storing documentation and data from source 
 #2015
-  download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/CHR2015_MI_0.pdf",
-                'SummaryReport2015',mode="wb")
-  download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2015%20County%20Health%20Rankings%20Michigan%20Data%20-%20v1_0.xls",
+download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/CHR2015_MI_0.pdf",
+              'SummaryReport2015.pdf',mode="wb")
+download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2015%20County%20Health%20Rankings%20Michigan%20Data%20-%20v1_0.xls",
               'FullCounty2015Data.xls',mode="wb")
 #2014
-  download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/CHR2015_MI_0.pdf",
-              'SummaryReport2014',mode="wb")
-  download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2014%20County%20Health%20Rankings%20Michigan%20Data%20-%20v3.xls",
+download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/CHR2015_MI_0.pdf",
+              'SummaryReport2014.pdf',mode="wb")
+download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2014%20County%20Health%20Rankings%20Michigan%20Data%20-%20v3.xls",
               'FullCounty2014Data.xls',mode="wb")
 #2013
-  download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/CHR2015_MI_0.pdf",
-              'SummaryReport2013',mode="wb")
-  download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2013%20County%20Health%20Ranking%20Michigan%20Data%20-%20v1_0.xls",
+download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/CHR2015_MI_0.pdf",
+              'SummaryReport2013.pdf',mode="wb")
+download.file("http://www.countyhealthrankings.org/sites/default/files/state/downloads/2013%20County%20Health%20Ranking%20Michigan%20Data%20-%20v1_0.xls",
               'FullCounty2013Data.xls', mode="wb")
 
 #Merge the files into one and save
@@ -48,3 +48,4 @@ save("County.Health.Rankings",file="County.Health.Rankings.rda")
 #cleanup and set WD back to default home directory 
 rm(x,County15,County14,County13)
 setwd("~/")
+
