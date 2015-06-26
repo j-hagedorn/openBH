@@ -54,5 +54,7 @@ o05<-select(o05,FIPS=X,Obesity.Prevalence=X2005)
 #Combine,save and set WD back to normal
 Obesity.Prevalence<-rbind(o12,o11,o10,o09,o08,o07,o06,o05)
 
+save(Obesity.Prevalence,file="Obesity.Prevalence.rda")
+
 rm(o12,o11,o10,o09,o08,o07,o06,o05)
 setwd("~/")
