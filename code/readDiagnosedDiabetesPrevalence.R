@@ -1,4 +1,4 @@
-library(gdata)
+library(gdata)#Requires latest verion of pearl
 library(dplyr)
 
 dir.create("Diagnosed.Diabetes.Prevalence")
@@ -53,6 +53,8 @@ d05<-select(d05,FIPS=X,Diagnosed.Diabetes.Prevalence=X2005)
 
 #Combine,save and set WD back to normal
 Diagnosed.Diabetes.Prevalence<-rbind(d12,d11,d10,d09,d08,d07,d06,d05)
+
+save(Diagnosed.Diabetes.Prevalence,file="Diagnosed.Diabetes.Prevalence.rda")
 
 rm(d12,d11,d10,d09,d08,d07,d06,d05)
 setwd("~/")
