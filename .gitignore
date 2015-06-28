@@ -8,3 +8,12 @@
 *.xls
 *.xlsx
 *.pdf
+*.zip
+
+# Shapefiles
+*.cpg
+*.dbf
+*.prj
+*.shp
+*.xml
+*.shx
