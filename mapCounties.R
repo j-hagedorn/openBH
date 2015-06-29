@@ -17,8 +17,7 @@ library(rgdal) #for reading/writing geo files
                       verbose = FALSE)
 
 leaflet(counties) %>%
-  addTiles(urlTemplate = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
-           attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
+  addProviderTiles("Stamen.TonerLite") %>%
   addPolygons(
     stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5,
     color = ~colorQuantile("YlOrRd", counties$AWATER)(AWATER)
