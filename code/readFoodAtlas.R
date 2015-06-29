@@ -6,6 +6,7 @@ setwd("~/Access to store")
 
 Access10<-read.xls("http://ers.usda.gov/datafiles/Food_Environment_Atlas/Data_Access_and_Documentation_Downloads/Current_Version/DataDownload.xls",
          sheet=5)
+Access10<-mutate(Access10,Year="2010")
 
 Access10<-subset(Access10,State=="MI")
 
@@ -13,14 +14,14 @@ Access10<-subset(Access10,State=="MI")
 Access10$LACCESS_HHNV10<-round(Access10$LACCESS_HHNV10, digits = 0)
 
 #Selecting variable of interest
-Access10<-select(Access10,FIPS,
+Access10<-select(Access10,FIPS,Year,
                  No.Car.and.Low.access.to.store=LACCESS_HHNV10)
       
 
 #############################################################################
 Access06<-read.xls("http://ers.usda.gov/datafiles/Food_Environment_Atlas/Data_Access_and_Documentation_Downloads/Archived_2011_Version/data_download_archive_2011.xls",
                    sheet=3)
-
+Access06<-mutate(Access06,Year="2006")
 Access06<-subset(Access06,STATE_NAME=="Michigan")
 
 #rounding decimals to the largest integer
@@ -28,7 +29,7 @@ Access06$LOWI1MI<-round(Access06$HHNV1MI, digits = 0)
 
 
 #Selecting variable of interest
-Access06<-select(Access06,FIPS=FIPSNUM,
+Access06<-select(Access06,FIPS=FIPSNUM,Year,
                  No.Car.and.Low.access.to.store=HHNV1MI)
 
 #Sorting all data rows based on FIPS column in increasing order  
