@@ -50,14 +50,17 @@ o06<-mutate(o06,Year="2006")
 
 o06<-select(o06,FIPS=X,Year,Obesity.Prevalence=X2006)
 
+<<<<<<< HEAD
 #2005
 o05<-read.xls("http://www.cdc.gov/diabetes/atlas/countydata/OBPREV/OB_PREV_ALL_STATES.xlsx")
 o05<-subset(o05,Obesity.Prevalence=="Michigan")
 o05<-mutate(o05,Year="2005")
 
 o05<-select(o05,FIPS=X,Year,Obesity.Prevalence=X2005)
+=======
+>>>>>>> 3babeff477d4a503cff7c89ed52ba65267a9aa39
 
 #Combine,save and set WD back to normal
-Obesity.Prevalence<-rbind(o12,o11,o10,o09,o08,o07,o06,o05)
+Obesity.Prevalence<-rbind(o12,o11,o10,o09,o08,o07,o06)
 
 save(Obesity.Prevalence,file="Obesity.Prevalence.rda")

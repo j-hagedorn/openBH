@@ -73,15 +73,20 @@ E06<-subset(E06,State==026)
 E06$FIPS<-seq.int(from=26001,to=26165,by=2)
 
 E06<-select(E06,FIPS,Year,Labor.Force=X.4,Unemployed=X.6)
+<<<<<<< HEAD
 ###########################################################################
 E05<-read.xls("http://www.bls.gov/lau/laucnty05.xlsx",skip=1,method="csv")
 E05<-mutate(E05,Year="2005")
+=======
+>>>>>>> 3babeff477d4a503cff7c89ed52ba65267a9aa39
 
-E05<-subset(E05,State==026)
-E05$FIPS<-seq.int(from=26001,to=26165,by=2)
 
+<<<<<<< HEAD
 E05<-select(E05,FIPS,Year,Labor.Force=X.4,Unemployed=X.6)
 
 Unemployment<-rbind(E14,E13,E11,E10,E09,E08,E07,E06,E05)
+=======
+Unemployment<-rbind(E14,E13,E12,E11,E10,E09,E08,E07,E06)
+>>>>>>> 3babeff477d4a503cff7c89ed52ba65267a9aa39
 
 save(Unemployment,file="Unemployment.rda")

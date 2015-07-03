@@ -1,6 +1,10 @@
 library(gdata)
 library(dplyr)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3babeff477d4a503cff7c89ed52ba65267a9aa39
 #2012
 d12<-read.xls("http://www.cdc.gov/diabetes/atlas/countydata/DMPREV/DM_PREV_ALL_STATES.xlsx")
 d12<-subset(d12,Diagnosed.Diabetes.Prevalence=="Michigan")
@@ -49,6 +53,7 @@ d06<-subset(d06,Diagnosed.Diabetes.Prevalence=="Michigan")
 d06<-mutate(d06,Year="2006")
 
 d06<-select(d06,FIPS=X,Year,Diagnosed.Diabetes.Prevalence=X2006)
+<<<<<<< HEAD
 
 #2005
 d05<-read.xls("http://www.cdc.gov/diabetes/atlas/countydata/DMPREV/DM_PREV_ALL_STATES.xlsx")
@@ -56,10 +61,15 @@ d05<-subset(d05,Diagnosed.Diabetes.Prevalence=="Michigan")
 d05<-mutate(d05,Year="2005")
 
 d05<-select(d05,FIPS=X,Year,Diagnosed.Diabetes.Prevalence=X2005)
+=======
+>>>>>>> 3babeff477d4a503cff7c89ed52ba65267a9aa39
 
 #Combine,save and set WD back to normal
-Diagnosed.Diabetes.Prevalence<-rbind(d12,d11,d10,d09,d08,d07,d06,d05)
+Diagnosed.Diabetes.Prevalence<-rbind(d12,d11,d10,d09,d08,d07,d06)
 
 save(Diagnosed.Diabetes.Prevalence,file="Diagnosed.Diabetes.Prevalence.rda")
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 3babeff477d4a503cff7c89ed52ba65267a9aa39
