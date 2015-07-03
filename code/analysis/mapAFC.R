@@ -2,16 +2,23 @@
 # Download leaflet lib
 # https://github.com/rstudio/leaflet/blob/master/vignettes/leaflet.Rmd
 
-  if (!require('devtools')) install.packages('devtools')
-  devtools::install_github('rstudio/leaflet')
+#   if (!require('devtools')) install.packages('devtools')
+#   devtools::install_github('rstudio/leaflet')
     
   library(leaflet)
   library(dplyr)
   
+  data$popup <- paste("<table><tr><td>Facility:", data$FacilityName,
+                      "<br>Licensee:",data$Licensee, 
+                      "<br>Address:",data$GeoAddress, 
+                      "<br>Capacity:",data$Capacity, 
+                      "<br>Violations in Past Year?", data$ViolationsPastYr,
+                      "</td></tr></table>")
+  
+  
   leaflet(data) %>% 
-    addTiles(urlTemplate = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
-             attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>% # (urlTemplate = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png") %>%
-    addCircles() %>% 
+    addProviderTiles("Stamen.TonerLite") %>%
+    addCircles(fillOpacity = .5, radius = ~Capacity, popup=~popup) %>% #color="red", radius=~PMLevel*1000
     setView(-85.373016, 43.808709, zoom = 7)
   #addPopups
   

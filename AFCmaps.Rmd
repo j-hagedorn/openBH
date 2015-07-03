@@ -53,11 +53,19 @@ data$Provisionals <- data$Status %in% c("1ST PROVISIONAL","2ND PROVISIONAL")
 Adult Foster Care homes are spread across the state of Michigan.  There are `r length(data$LicenseNo)` of these facilities in the state, clustered around urban areas.  You can zoom into the map below to look at the distribution of facilities in specific areas:
 ```{r, echo= FALSE, message=FALSE}
 library(leaflet)
+library(dplyr)
+  
+# Define popup message
+  data$popup <- paste("<table><tr><td>Facility:", data$FacilityName,
+                      "<br>Licensee:",data$Licensee, 
+                      "<br>Address:",data$GeoAddress, 
+                      "<br>Capacity:",data$Capacity, 
+                      "<br>Violations in Past Year?", data$ViolationsPastYr,
+                      "</td></tr></table>")
   
   leaflet(data) %>% 
-    addTiles(urlTemplate = 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',
-             attribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>% # (urlTemplate = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png") %>%
-    addCircles() %>% 
+    addProviderTiles("Stamen.TonerLite") %>%
+    addCircles(fillOpacity = .5, radius = ~Capacity, popup=~popup) %>% 
     setView(-85.373016, 43.808709, zoom = 7)
 ```
 
