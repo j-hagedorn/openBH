@@ -1,5 +1,4 @@
-# BRFSS
-# http://www.cdc.gov/brfss/smart/smart_2012.html
-
-
-brfss_12 <- read.delim("C:\\Users\\Josh\\Documents\\GitHub\\openBH\\data\\brfss\\CNTY12.asc")
+temp <- tempfile()
+download.file("http://www.cdc.gov/brfss/smart/2012/cnty12asc.zip",temp)
+data <- read.fwf(unz(temp, "CNTY12.asc"), widths = 285)
+unlink(temp)

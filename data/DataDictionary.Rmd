@@ -1,0 +1,198 @@
+---
+title: "County Level Data Documentation"
+author: "Joseph Torres"
+output:
+  html_document:
+    theme: flatly
+  pdf_document: default
+---
+
+
+####**Data Dictionary and Sources**
+
+*hlfr_chr*  | County Health Factor Ranking       
+-------------| -------------
+Definition| County Health Factor rankings are provided by "County Health Rankings and Road maps" a Robert Wood Johnson Foundation program. This component of the overall ranking takes into account various health behavior variables such as clinical care, physical environment, social and economic factors. 
+Source|[County Health Rankings and Roadmaps](http://www.countyhealthrankings.org/rankings/data)
+Years| 2010-2015
+
+*tltp_acs*   | Total Population
+------------- | -------------
+Definition   | For census purposes, the total population of the country consists of all persons falling within the scope of the census. In the broadest sense, the total may comprise either all usual residents of the country or all persons present in the country at the time of the census
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*t<18_acs*   | Total Population under the age of 18
+------------- | -------------
+Definition   | For census purposes, the total population  of all persons falling under the age of 18. In the broadest sense, the total may comprise either all usual residents of the country or all persons present in the country at the time of the census
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*mdin_acs*   | Median income
+------------- | -------------
+Definition   | Median income is the amount that divides the income distribution into two equal groups, half having income above that amount, and half having income below that amount.
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*disb_acs*   | Number of disabled persons 
+------------- | -------------
+Definition   | Any person who has a physical or mental impairment that substantially limits one or more major life activities.
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2012-2013
+
+*cgnt_acs*   | Number of persons with cognitive difficulty 
+------------- | -------------
+Definition   | A physical, mental, or emotional problem, having difficulty remembering, concentrating, or making decisions .
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2012-2013
+
+*ambu_acs*   | Number of persons with ambulatory difficulty 
+------------- | -------------
+Definition   | Any person having serious difficulty walking or climbing stairs .
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2012-2013
+
+*scdf_acs*   | Number of persons with Self-care Difficulty 
+------------- | -------------
+Definition   | Any person having difficulty bathing or dressing .
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2012-2013
+
+*indf_acs*   | Number of persons with an independent living difficulty
+------------- | -------------
+Definition   | Any person,because of a physical, mental, or emotional problem, having difficulty doing errands alone such as visiting a doctor's office or shopping.
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2012-2013
+
+*gini_acs*   | Gini Index Of Income Inequality
+------------- | -------------
+Definition   | Standard economic measure of income inequality, based on Lorenz Curve. A county that with a score of 0.0 on the Gini scale indicates every person has an equal share of the total income . The higher the number the more unequal the income distribution. A score of 1 would indicate that one person owns all the income in that county. 
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*vetr_acs*   |  Number of veterans
+------------- | -------------
+Definition   | Men and women who have served (even for a short time), but are not currently serving, on active duty in the U.S. Army, Navy, Air Force, Marine Corps, or the Coast Guard, or who served in the U.S. Merchant Marine during World War II. People who served in the National Guard or Reserves are classified as veterans only if they were ever called or ordered to active duty, not counting the 4-6 months for initial training or yearly summer camps. 
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*snap_acs*   |  Receipt of Food Stamps/SNAP
+------------- | -------------
+Definition   | The Supplemental Nutrition Assistance Program (SNAP) is the name for what was formerly known as the federal Food Stamp Program, as of October 1, 2008.SNAP is a low-income assistance program that is uniform in its eligibility requirements and benefit levels across states (except for Alaska and Hawaii).  
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*eemp_acs*   |  Worked in the past 12 months: 65 to 74 years
+------------- | -------------
+Definition   |    The total number of persons over the age of 65 and under 74 who were still actively participating in the civilian workforce during the past year.
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*lshs_acs*   |  Less than high school graduate
+------------- | -------------
+Definition   |    The total number of persons who have not obtained a high school diploma.
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*medc_acs*   |  Medicare Coverage
+------------- | -------------
+Definition   |    The total number of persons who are receiving Medicare coverage.
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*mdmt_acs*   |  Medicaid/Means-tested Public Coverage
+------------- | -------------
+Definition   |    The total number of persons who are receiving Medicaid coverage.
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*inpt_acs*   |  Under 1.38 of poverty threshold
+------------- | -------------
+Definition   |    The total number of persons who have an income below 138% of the official poverty level as mandated by the Federal Poverty Guidelines .
+Source  | [American Community Survey](http://www.census.gov/programs-surveys/acs/data/summary-file.html)
+Years | 2010-2013
+
+*ddpv_cdc*  | Diagnosed Diabetes Prevalence      
+-------------| -------------
+Definition| The total number of adults who have been diagnosed with diabetes 
+Source|[Centers for Disease Control](http://www.cdc.gov/diabetes/atlas/countydata/County_ListofIndicators.html)
+Years| 2006-2012
+
+*ospv_cdc*  | Obesity Prevalence      
+-------------| -------------
+Definition| The total number of adults whose weight is higher than what is considered healthy for a given height   
+Source|[Centers for Disease Control](http://www.cdc.gov/diabetes/atlas/countydata/County_ListofIndicators.html)
+Years| 2006-2012
+
+*lila_fal*  |Low income and low access to food       
+-------------|-------------
+Definition |  Number of people in a county living more than 1 mile from a supermarket or large grocery store if in an urban area, or more than 10 miles from a supermarket or large grocery store if in a rural area.
+Source|[USDA](http://ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads.aspx)
+Years| 2006 & 2010
+
+*tmre_dtm*  |Total Medicare reimbursements per enrollee   
+-------------| ------------- 
+Definition | This includes the total Medicare reimbursements per enrollee for parts A and B.
+Source|[The Dartmouth Atlas of Health Care](http://www.dartmouthatlas.org/tools/downloads.aspx?tab=35)
+Years| 2010-2012
+
+*lbrf_bls*  | Labor Force   
+-------------  | -------------
+Definition    | The subset of the population who have jobs or are seeking a job, are at least 16 years old, are not serving in the military and are not institutionalized
+Source  |[U.S. Bureau of Labor Statistics](http://www.bls.gov/lau/#ex14)
+Years | 2006-2012
+
+*unmpl_bls*  | Unemployed   
+-------------  | -------------
+Definition    | The subset of the population who are at least 16 years old, are not serving in the military and are not institutionalized and do not have a job, have *actively* looked for work in the prior 4 weeks, and are currently available for work 
+Source  |[U.S. Bureau of Labor Statistics](http://www.bls.gov/lau/#ex14)
+Years | 2006-2012
+
+*3bdr_hud*  | 3 bedroom rent estimate      
+------------- | -------------
+Definition  |  Gross rent estimate.Includes the shelter rent plus the cost of all tenant-paid utilities, except telephones, cable or satellite television service, and internet service. 
+Source  |[U.S. Department of Housing and Urban Development](http://www.huduser.org/portal/datasets/fmr.html)
+Years | 2006-2015
+
+*mudr_fbi*  | Murder      
+-------------| -------------
+Definition|  The willful (non negligent) killing of one human being by another. 
+Source|[FBI](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57/studies?geography%5B0%5D=United+States&q=county+level+data&archive=NACJD&dataFormat%5B0%5D=R&paging.startRow=1) 
+Years| 2009-2012
+
+*rape_fbi*  | Rape      
+-------------| -------------
+Definition|  Includes Forcible Rape of a female by a male, and attempts to commit Forcible Rape of a female by a male. Excludes: Other Sex Offenses such as Sodomy, Statutory Rape (no force), Incest, and attempts to commit any of the above. 
+Source|[FBI](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57/studies?geography%5B0%5D=United+States&q=county+level+data&archive=NACJD&dataFormat%5B0%5D=R&paging.startRow=1)
+Years| 2009-2012
+
+*robry_fbi*  | Robbery      
+-------------| -------------
+Definition|  The taking or attempting to take anything of value from the care, custody, or control of a person or persons by force or threat of force or violence and/or by putting the victim in fear. 
+Source|[FBI](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57/studies?geography%5B0%5D=United+States&q=county+level+data&archive=NACJD&dataFormat%5B0%5D=R&paging.startRow=1)
+Years| 2009-2012
+
+*agva_fbi*  | Aggravated Assault      
+-------------| -------------
+Definition|  An unlawful attack by one person upon another for the purpose of inflicting severe or aggravated bodily injury.
+Source|[FBI](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57/studies?geography%5B0%5D=United+States&q=county+level+data&archive=NACJD&dataFormat%5B0%5D=R&paging.startRow=1)
+Years| 2009-2012
+
+*mtvt_fbi*  | Motor Vehicle Theft      
+-------------| -------------
+Definition|  The theft or attempted theft of a motor vehicle.
+Source|[FBI](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57/studies?geography%5B0%5D=United+States&q=county+level+data&archive=NACJD&dataFormat%5B0%5D=R&paging.startRow=1)
+Years| 2009-2012
+
+*arsn_fbi*  | Arson      
+-------------| -------------
+Definition|  Any willful or malicious burning or attempting to burn, with or without intent to defraud, a dwelling house, public building, motor vehicle or aircraft, personal property of another, etc.
+Source|[FBI](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57/studies?geography%5B0%5D=United+States&q=county+level+data&archive=NACJD&dataFormat%5B0%5D=R&paging.startRow=1)
+Years| 2009-2012
+
+
+
+
+
+
+
