@@ -75,5 +75,9 @@
   
   ahrf_ref <-
     ahrf_ref %>%
-    filter(!is.na("COL-COL") & !is.na(CHARACTERISTICS))
+    filter(!is.na("COL-COL") & !is.na(CHARACTERISTICS)) %>%
+    filter(FIELD != "FIELD") %>%
+    mutate(FIELD = gsub("-","",tolower(FIELD)))
+ 
+  gsub("-","",ahrf_ref$FIELD) 
   
