@@ -1,6 +1,8 @@
+library(plyr)
 library(dplyr)
 library(magrittr)
 library(tidyr)
+library(car)
 
 ## CLEAN & MERGE DATA
 
@@ -34,9 +36,17 @@ drug_death <-
          opioid = Opiod.Deaths,
          heroin = Heroin.Deaths,
          alldrug = Total.Poisoning) %>%
-  gather(cause, deaths, opioid:alldrug)
+  gather(cause, deaths, opioid:alldrug) %>%
+  mutate(year = as.factor(year),
+         county = ifelse(county %in% c("Detroit","Wayne \nexecluding \nDetroit"),
+                         yes = "Wayne", no = as.character(county))) %>%
+  ungroup() %>% droplevels() %>%
+  select(county,year,cause,deaths) %>%
+  group_by(county,year,cause) %>%
+  summarise(deaths = sum(deaths)) %>%
+  mutate(key = paste0(county,"_",year))
 
-# Combine rest of Wayne and Detroit
+## Remove unnecessary df
 
 rm(opioid); rm(heroin); rm(alldrug)
 
@@ -141,176 +151,171 @@ rm(MI_df_14);rm(MI_df_13);rm(MI_df_12);rm(MI_df_11);rm(MI_df_10);rm(MI_df_09)
 rm(MI_2014);rm(MI_2013);rm(MI_2012);rm(MI_2011);rm(MI_2010);rm(MI_2009)
 rm(lookup_MI);rm(MIbyCounty);rm(MIcounties)
 
-# Map counties to 404 CMHs and PIHP regions
-#####
-library(car)
-
-MI_df$CMHSP<-recode(MI_df$County, "'Alcona County, Michigan'='Northeast Michigan';
-                    'Alger County, Michigan'='Pathways';
-                    'Allegan County, Michigan'='Allegan';       
-                    'Alpena County, Michigan'='Northeast Michigan';       
-                    'Antrim County, Michigan'='North Country';       
-                    'Arenac County, Michigan'='Bay-Arenac';        
-                    'Baraga County, Michigan'='Copper Country';         
-                    'Barry County, Michigan'='Barry';     
-                    'Bay County, Michigan'='Bay-Arenac';         
-                    'Benzie County, Michigan'='Manistee-Benzie';        
-                    'Berrien County, Michigan'='Berrien';      
-                    'Branch County, Michigan'='Pines'; 
-                    'Calhoun County, Michigan'='Summit Pointe';    
-                    'Cass County, Michigan'='Woodlands';
-                    'Charlevoix County, Michigan'='North Country';   
-                    'Cheboygan County, Michigan'='North Country';   
-                    'Chippewa County, Michigan'= 'Hiawatha';       
-                    'Clare County, Michigan'='CMH for Central Michigan';     
-                    'Clinton County, Michigan'='Clinton Eaton Ingham';       
-                    'Crawford County, Michigan'='Northern Lakes';   
-                    'Delta County, Michigan'='Pathways';      
-                    'Dickinson County, Michigan'='Northpointe';    
-                    'Eaton County, Michigan'='Clinton Eaton Ingham';      
-                    'Emmet County, Michigan'='North Country';
-                    'Genesee County, Michigan'='Genesee';       
-                    'Gladwin County, Michigan'='CMH for Central Michigan';    
-                    'Gogebic County, Michigan'='Gogebic';    
-                    'Grand Traverse County, Michigan'='Northern Lakes';
-                    'Gratiot County, Michigan'='Gratiot';
-                    'Hillsdale County, Michigan'='Lifeways';    
-                    'Houghton County, Michigan'='Copper Country';      
-                    'Huron County, Michigan'='Huron';
-                    'Ingham County, Michigan'='Clinton Eaton Ingham';        
-                    'Ionia County, Michigan'='Ionia';    
-                    'Iosco County, Michigan'='AuSable Valley';        
-                    'Iron County, Michigan'='Northpointe';  
-                    'Isabella County, Michigan'='CMH for Central Michigan';  
-                    'Jackson County, Michigan'='Lifeways';    
-                    'Kalamazoo County, Michigan'='Kalamazoo';  
-                    'Kalkaska County, Michigan'='North Country'; 
-                    'Kent County, Michigan'='Network180';
-                    'Keweenaw County, Michigan'='Copper Country';       
-                    'Lake County, Michigan'='West Michigan';
-                    'Lapeer County, Michigan'='Lapeer';     
-                    'Leelanau County, Michigan'='Northern Lakes';  
-                    'Lenawee County, Michigan'='Lenawee';    
-                    'Livingston County, Michigan'='Livingston';   
-                    'Luce County, Michigan'='Pathways';
-                    'Mackinac County, Michigan'='Hiawatha';       
-                    'Macomb County, Michigan'='Macomb';
-                    'Manistee County, Michigan'='Manistee-Benzie';     
-                    'Marquette County, Michigan'='Pathways';   
-                    'Mason County, Michigan'='West Michigan';
-                    'Mecosta County, Michigan'='CMH for Central Michigan';     
-                    'Menominee County, Michigan'='Northpointe';     
-                    'Midland County, Michigan'='CMH for Central Michigan';
-                    'Missaukee County, Michigan'='Northern Lakes';     
-                    'Monroe County, Michigan'='Monroe';
-                    'Montcalm County, Michigan'='Montcalm';
-                    'Montmorency County, Michigan'='Northeast Michigan';
-                    'Muskegon County, Michigan'='Muskegon';    
-                    'Newaygo County, Michigan'='Newaygo'; 
-                    'Oakland County, Michigan'='Oakland';    
-                    'Oceana County, Michigan'='West Michigan';   
-                    'Ogemaw County, Michigan'='AuSable Valley';      
-                    'Ontonagon County, Michigan'='Copper Country';
-                    'Osceola County, Michigan'='CMH for Central Michigan';       
-                    'Oscoda County, Michigan'='AuSable Valley';      
-                    'Otsego County, Michigan'='North Country';         
-                    'Ottawa County, Michigan'='Ottawa';       
-                    'Presque Isle County, Michigan'='Northeast Michigan';   
-                    'Roscommon County, Michigan'='Northern Lakes';  
-                    'Saginaw County, Michigan'='Saginaw';     
-                    'Sanilac County, Michigan'='Sanilac';      
-                    'Schoolcraft County, Michigan'='Hiawatha';  
-                    'Shiawassee County, Michigan'='Shiawassee';   
-                    'St. Clair County, Michigan'='St. Clair'; 
-                    'St. Joseph County, Michigan'='St. Joseph';  
-                    'Tuscola County, Michigan'='Tuscola';
-                    'Van Buren County, Michigan'='Van Buren';   
-                    'Washtenaw County, Michigan'='Washtenaw';      
-                    'Wayne County, Michigan'='Detroit-Wayne';     
-                    'Wexford County, Michigan'='Northern Lakes'") 
-
-MI_df$PIHP<-recode(MI_df$CMHSP, "'Copper Country'='1';
-                   'Network180'='3'; 
-                   'Gogebic'='1';
-                   'Hiawatha'='1';
-                   'Northpointe'='1'; 
-                   'Pathways'='1';
-                   'AuSable Valley'='2';
-                   'Manistee-Benzie'='2';
-                   'North Country'='2';
-                   'Northeast Michigan'='2';
-                   'Northern Lakes'='2';
-                   'Allegan'='3';
-                   'Muskegon'='3';
-                   'Network180'='3';
-                   'Ottawa'='3';
-                   'West Michigan'='3';
-                   'Barry'='4';
-                   'Berrien'='4';
-                   'Kalamazoo'='4';
-                   'Pines'='4';
-                   'St. Joseph'='4';
-                   'Summit Pointe'='4';
-                   'Van Buren'='4';
-                   'Woodlands'='4';
-                   'Bay-Arenac'='5';
-                   'Clinton Eaton Ingham'='5';
-                   'CMH for Central Michigan'='5';
-                   'Gratiot'='5';
-                   'Huron'='5';
-                   'Ionia'='5';
-                   'Lifeways'='5';
-                   'Montcalm'='5';
-                   'Newaygo'='5';
-                   'Saginaw'='5';
-                   'Shiawassee'='5';
-                   'Tuscola'='5';
-                   'Lenawee'='6';
-                   'Livingston'='6';
-                   'Monroe'='6';
-                   'Washtenaw'='6';
-                   'Detroit-Wayne'='7';
-                   'Oakland'='8';
-                   'Macomb'='9';
-                   'Genesee'='10';
-                   'Lapeer'='10';
-                   'Sanilac'='10';
-                   'St. Clair'='10'")
-
-MI_df$PIHPname<-recode(MI_df$PIHP, "'1'='Northcare';
-                       '2'='NMRE';
-                       '3'='LRP';
-                       '4'='SWMBH';
-                       '5'='MSHN'; 
-                       '6'='CMHPSM';
-                       '7'='DWMHA';
-                       '8'='OCCMHA';
-                       '9'='MCMHS';
-                       '10'='Region10'")
-
 MI_df <- MI_df[,c(1,7,8,6,2:5)] #reorder columns
 
-tst <- 
+pop_yr <-
 MI_df %>%
-  mutate(county_short = gsub(" County, Michigan","",County),
-         )
+  mutate(county = gsub(" County, Michigan","",County),
+         key = paste0(county,"_",Year)) %>%
+  select(key,TotalPop)
 
 # Aggregate population numbers by CMHSP regions
-byCMHSP <- summarize(group_by(MI_df, Year, CMHSP), 
-                     TotalPop = sum(TotalPop), 
-                     Under18 = sum(Under18),
-                     Over18 = sum(Over18))
+
+drug_death %<>%
+  left_join(pop_yr, by = "key") %>%
+  mutate(CMHSP = recode(county, "'Alcona'='Northeast Michigan';
+                                'Alger'='Pathways';
+                        'Allegan'='Allegan';       
+                        'Alpena'='Northeast Michigan';       
+                        'Antrim'='North Country';       
+                        'Arenac'='Bay-Arenac';        
+                        'Baraga'='Copper Country';         
+                        'Barry'='Barry';     
+                        'Bay'='Bay-Arenac';         
+                        'Benzie'='Manistee-Benzie';        
+                        'Berrien'='Berrien';      
+                        'Branch'='Pines'; 
+                        'Calhoun'='Summit Pointe';    
+                        'Cass'='Woodlands';
+                        'Charlevoix'='North Country';   
+                        'Cheboygan'='North Country';   
+                        'Chippewa'= 'Hiawatha';       
+                        'Clare'='CMH for Central Michigan';     
+                        'Clinton'='Clinton Eaton Ingham';       
+                        'Crawford'='Northern Lakes';   
+                        'Delta'='Pathways';      
+                        'Dickinson'='Northpointe';    
+                        'Eaton'='Clinton Eaton Ingham';      
+                        'Emmet'='North Country';
+                        'Genesee'='Genesee';       
+                        'Gladwin'='CMH for Central Michigan';    
+                        'Gogebic'='Gogebic';    
+                        'Grand Traverse'='Northern Lakes';
+                        'Gratiot'='Gratiot';
+                        'Hillsdale'='Lifeways';    
+                        'Houghton'='Copper Country';      
+                        'Huron'='Huron';
+                        'Ingham'='Clinton Eaton Ingham';        
+                        'Ionia'='Ionia';    
+                        'Iosco'='AuSable Valley';        
+                        'Iron'='Northpointe';  
+                        'Isabella'='CMH for Central Michigan';  
+                        'Jackson'='Lifeways';    
+                        'Kalamazoo'='Kalamazoo';  
+                        'Kalkaska'='North Country'; 
+                        'Kent'='Network180';
+                        'Keweenaw'='Copper Country';       
+                        'Lake'='West Michigan';
+                        'Lapeer'='Lapeer';     
+                        'Leelanau'='Northern Lakes';  
+                        'Lenawee'='Lenawee';    
+                        'Livingston'='Livingston';   
+                        'Luce'='Pathways';
+                        'Mackinac'='Hiawatha';       
+                        'Macomb'='Macomb';
+                        'Manistee'='Manistee-Benzie';     
+                        'Marquette'='Pathways';   
+                        'Mason'='West Michigan';
+                        'Mecosta'='CMH for Central Michigan';     
+                        'Menominee'='Northpointe';     
+                        'Midland'='CMH for Central Michigan';
+                        'Missaukee'='Northern Lakes';     
+                        'Monroe'='Monroe';
+                        'Montcalm'='Montcalm';
+                        'Montmorency'='Northeast Michigan';
+                        'Muskegon'='Muskegon';    
+                        'Newaygo'='Newaygo'; 
+                        'Oakland'='Oakland';    
+                        'Oceana'='West Michigan';   
+                        'Ogemaw'='AuSable Valley';      
+                        'Ontonagon'='Copper Country';
+                        'Osceola'='CMH for Central Michigan';       
+                        'Oscoda'='AuSable Valley';      
+                        'Otsego'='North Country';         
+                        'Ottawa'='Ottawa';       
+                        'Presque Isle'='Northeast Michigan';   
+                        'Roscommon'='Northern Lakes';  
+                        'Saginaw'='Saginaw';     
+                        'Sanilac'='Sanilac';      
+                        'Schoolcraft'='Hiawatha';  
+                        'Shiawassee'='Shiawassee';   
+                        'St. Clair'='St. Clair'; 
+                        'St. Joseph'='St. Joseph';  
+                        'Tuscola'='Tuscola';
+                        'Van Buren'='Van Buren';   
+                        'Washtenaw'='Washtenaw';      
+                        'Wayne'='Detroit-Wayne';     
+                        'Wexford'='Northern Lakes'"))
+
+drug_death$PIHP <- recode(drug_death$CMHSP, "'Copper Country'='1';
+                       'Network180'='3'; 
+                       'Gogebic'='1';
+                       'Hiawatha'='1';
+                       'Northpointe'='1'; 
+                       'Pathways'='1';
+                       'AuSable Valley'='2';
+                       'Manistee-Benzie'='2';
+                       'North Country'='2';
+                       'Northeast Michigan'='2';
+                       'Northern Lakes'='2';
+                       'Allegan'='3';
+                       'Muskegon'='3';
+                       'Network180'='3';
+                       'Ottawa'='3';
+                       'West Michigan'='3';
+                       'Barry'='4';
+                       'Berrien'='4';
+                       'Kalamazoo'='4';
+                       'Pines'='4';
+                       'St. Joseph'='4';
+                       'Summit Pointe'='4';
+                       'Van Buren'='4';
+                       'Woodlands'='4';
+                       'Bay-Arenac'='5';
+                       'Clinton Eaton Ingham'='5';
+                       'CMH for Central Michigan'='5';
+                       'Gratiot'='5';
+                       'Huron'='5';
+                       'Ionia'='5';
+                       'Lifeways'='5';
+                       'Montcalm'='5';
+                       'Newaygo'='5';
+                       'Saginaw'='5';
+                       'Shiawassee'='5';
+                       'Tuscola'='5';
+                       'Lenawee'='6';
+                       'Livingston'='6';
+                       'Monroe'='6';
+                       'Washtenaw'='6';
+                       'Detroit-Wayne'='7';
+                       'Oakland'='8';
+                       'Macomb'='9';
+                       'Genesee'='10';
+                       'Lapeer'='10';
+                       'Sanilac'='10';
+                       'St. Clair'='10'")
+
+drug_death$PIHPname <- recode(drug_death$PIHP, "'1'='Northcare';
+                           '2'='NMRE';
+                           '3'='LRP';
+                           '4'='SWMBH';
+                           '5'='MSHN'; 
+                           '6'='CMHPSM';
+                           '7'='DWMHA';
+                           '8'='OCCMHA';
+                           '9'='MCMHS';
+                           '10'='Region10'")
+
+# Remove
+rm(pop_yr); rm(MI_df); rm(byCMHSP)
+
+drug_death %<>%
+  ungroup() %>% droplevels() %>%
+  group_by(year,cause) %>%
+  mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1),
+         pct_deaths = round(deaths/sum(deaths)*100, digits = 1)) %>%
+  select(PIHPname,CMHSP,county,year,cause,
+         deaths,pct_deaths,deaths_per_100k,TotalPop) %>%
+  ungroup() %>% droplevels()
 
 
-## MAKE PARETO CHART
-
-library(plotly)
-
-drug_death %>%
-  filter(year == 2014) %>%
-  plot_ly(x = county, y = deaths, type = "bar", color = cause, colors = "Set3") %>%
-  layout(xaxis = list(title = "Type of Need", showticklabels = F),
-         yaxis = list(title = "# times included in planning"),
-         legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
-                       font = list(size = 10)),
-         barmode = "stack")
