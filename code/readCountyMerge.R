@@ -8,7 +8,7 @@ pmy<-function(y){
     
     df<-as.vector(fips.county)
   # filtering out Guam,Puerto Rico and virgen islands
-    df<-df[-c(3144:3235),]
+    df<-df %>% filter(State == "MI")
     df[nchar(df[,2])==1,2] <- paste("0", df[nchar(df[,2])==1,2], sep="")
     df[nchar(df[,3])==1,3] <- paste("00", df[nchar(df[,3])==1,3], sep="")
     df[nchar(df[,3])==2,3] <- paste("0", df[nchar(df[,3])==2,3], sep="")
