@@ -39,7 +39,10 @@ drug_death <-
   gather(cause, deaths, opioid:alldrug) %>%
   mutate(year = as.factor(year),
          county = ifelse(county %in% c("Detroit","Wayne \nexecluding \nDetroit"),
-                         yes = "Wayne", no = as.character(county))) %>%
+                         yes = "Wayne", no = as.character(county)),
+         county = recode(county, 
+                         "'Saint Clair'='St. Clair'; 
+                         'Saint Joseph'='St. Joseph'")) %>%
   ungroup() %>% droplevels() %>%
   select(county,year,cause,deaths) %>%
   group_by(county,year,cause) %>%
@@ -318,4 +321,4 @@ drug_death %<>%
          deaths,pct_deaths,deaths_per_100k,TotalPop) %>%
   ungroup() %>% droplevels()
 
-
+write.csv(drug_death, "misuddr-app/data/drug_death.csv")
