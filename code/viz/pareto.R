@@ -44,3 +44,4 @@ drug_death %>%
          yaxis = list(title = "Deaths per 100,000 population"),
          legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
                        font = list(size = 10)))
+
