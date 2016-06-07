@@ -139,11 +139,30 @@ shinyServer(function(input, output) {
       layout(title = paste0("Frequency of ",input$cause),
              xaxis = list(title = input$group, showticklabels = F,
                           categoryarray = group, categoryorder = "array"),
-             yaxis = list(title = "Number of deaths"),
+             yaxis = list(title = "Number of deaths",
+                          range = c(0, max(deaths)*1.1)),
              yaxis2 = list(overlaying = "y", side = "right",
-                           ticksuffix = "%", showticklabels = F),
+                           ticksuffix = "%", showticklabels = F,
+                           range = c(0, max(cum_pct)*1.1)),
              legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
                            font = list(size = 10)))
+    
+  })
+  
+  output$define_pareto <- renderText({
+    
+    paste0(
+      "The chart above shows the number of ",
+      tolower(input$cause), " for the region managed by ", 
+      input$select_cmh, " CMH(s) in ", 
+      input$select_pihp, " PIHP(s).",
+      "  The bars in the chart are grouped by ",
+      input$group, " and include data for the years of ",
+      input$pareto_year[1], " through ", input$pareto_year[2], ".",
+      "  The line chart overlaid on the bars shows the cumulative 
+      percentage of all statewide ", tolower(input$cause), 
+      " moving from left to right across the chart."
+    )
     
   })
   
@@ -182,9 +201,89 @@ shinyServer(function(input, output) {
       layout(title = paste0("Rate of ",input$cause),
              xaxis = list(title = input$group, showticklabels = F,
                           categoryarray = group, categoryorder = "array"),
-             yaxis = list(title = "Deaths per 100,000 population"),
+             yaxis = list(title = "Deaths per 100,000 population",
+                          range = c(0, max(deaths_per_100k)*1.1)),
              legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
                            font = list(size = 10)))
+    
+  })
+  
+  output$define_rate <- renderText({
+    
+    paste0(
+      "The chart above shows the number of ",
+      tolower(input$cause), 
+      " per 100,000 people in the general population of the region managed by ", 
+      input$select_cmh, " CMH(s) in ", 
+      input$select_pihp, " PIHP(s).",
+      "  The bars in the chart are grouped by ",
+      input$group, " and include data for the years of ",
+      input$rate_year[1], " through ", input$rate_year[2], ".",
+      "  The dotted line overlaid on the bars shows the average rate of ",
+      tolower(input$cause), " per 100,000 across the ", 
+      input$group, " groups selected and the filters applied (i.e. ", 
+      input$select_cmh, " CMH(s) and ", 
+      input$select_pihp, " PIHP(s))."
+    )
+    
+  })
+  
+  output$line_cause <- renderPlotly({
+    
+    deaths() %>%
+      filter(is.na(TotalPop) == F) %>%
+      droplevels() %>% ungroup() %>%
+      group_by(year,cause) %>%
+      summarize(deaths = sum(deaths, na.rm = T),
+                TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+      ungroup() %>% droplevels() %>%
+      mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
+      ungroup() %>% droplevels() %>%
+      mutate(cause = recode(cause,
+                            "'opioid' = 'Opioids';
+                            'heroin' = 'Heroin';
+                            'alldrug' = 'Any drug'")) %>%
+      plot_ly(x = year, y = deaths_per_100k, color = cause,
+              name = "Rate per 100k", 
+              text = paste("Number of deaths: ", deaths,
+                           "<br>Total population: ", TotalPop),
+              line = list(shape = "spline")) %>%
+      layout(title = paste0("Trend of overdose deaths by cause"),
+             xaxis = list(title = "Year"),
+             yaxis = list(title = "Deaths per 100,000 population",
+                          range = c(0, max(deaths_per_100k)*1.1)),
+             legend = list(font = list(size = 10)))
+    
+  })
+  
+  output$line_group <- renderPlotly({
+    
+    cause_filt <- if (input$cause_line == "Heroin overdoses") {
+      c("heroin")
+    } else if (input$cause_line == "Opioid overdoses") {
+      c("opioid")
+    } else c("alldrug")
+    
+    deaths() %>%
+      filter(is.na(TotalPop) == F
+             & cause %in% cause_filt) %>%
+      droplevels() %>% ungroup() %>%
+      group_by(year,group) %>%
+      summarize(deaths = sum(deaths, na.rm = T),
+                TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+      ungroup() %>% droplevels() %>%
+      mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
+      ungroup() %>% droplevels() %>%
+      plot_ly(x = year, y = deaths_per_100k, color = group,
+              name = "Rate per 100k",
+              text = paste("Number of deaths: ", deaths,
+                           "<br>Total population: ", TotalPop),
+              line = list(shape = "spline")) %>%
+      layout(title = paste0("Trend of overdose deaths by ", input$group),
+             xaxis = list(title = "Year"),
+             yaxis = list(title = "Deaths per 100,000 population",
+                          range = c(0, max(deaths_per_100k)*1.1)),
+             legend = list(font = list(size = 10)))
     
   })
   
