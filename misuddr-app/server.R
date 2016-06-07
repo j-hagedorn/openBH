@@ -7,7 +7,7 @@ shinyServer(function(input, output) {
   deaths <- reactive({
     
     pihp_filt <- if (input$select_pihp == "All") {
-      levels(drug_death$CMHSP)
+      levels(drug_death$PIHPname)
     } else input$select_pihp
 
     cmh_filt <- if (input$select_cmh == "All") {
@@ -17,9 +17,7 @@ shinyServer(function(input, output) {
     deaths <-
     drug_death %>%
       filter(PIHPname %in% pihp_filt
-             & CMHSP %in% cmh_filt
-             & year >= input$year[1] 
-             & year <= input$year[2])
+             & CMHSP %in% cmh_filt)
     
     if (input$group == "County") {
       
@@ -92,13 +90,6 @@ shinyServer(function(input, output) {
     
   })
   
-  deaths_summary <- reactive({
-    
-    deaths() %>%
-      group_by()
-    
-  })
-  
   ## REACTIVE FILTERS
    
   output$select_cmh <- renderUI({
@@ -128,17 +119,25 @@ shinyServer(function(input, output) {
     } else c("alldrug")
       
     deaths() %>%
-      filter(cause == cause_filt) %>%
+      filter(cause == cause_filt
+             & year >= input$pareto_year[1] 
+             & year <= input$pareto_year[2]) %>%
+      group_by(group,cause) %>%
+      summarize(deaths = sum(deaths, na.rm = T)) %>%
+      ungroup() %>% droplevels() %>%
+      mutate(pct_deaths = round(deaths/sum(deaths)*100, digits = 1)) %>%
       ungroup() %>% droplevels() %>%
       arrange(desc(deaths)) %>%
       mutate(cum_pct = cumsum(pct_deaths)) %>%
       plot_ly(x = group, y = deaths, type = "bar", 
-              color = cause, colors = "Set3",
+              marker = list(color = "#555555"),
               name = "Count") %>%
       add_trace(x = group, y = cum_pct, type = "line",
+                marker = list(color = "#CD5555"),
                 name = "Cumulative %", 
                 yaxis = "y2") %>%
-      layout(xaxis = list(title = "Group", showticklabels = F,
+      layout(title = input$cause,
+             xaxis = list(title = input$group, showticklabels = F,
                           categoryarray = group, categoryorder = "array"),
              yaxis = list(title = "Number of deaths"),
              yaxis2 = list(overlaying = "y", side = "right",

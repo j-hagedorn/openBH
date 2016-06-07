@@ -28,18 +28,8 @@ dashboardPage(
         choices = c("All", levels(as.factor(drug_death$PIHPname))), 
         selected = "MSHN"
       ),
-      uiOutput("select_cmh"),
-      sliderInput(
-        "year", 
-        "Select year(s)", 
-        min = min(as.integer(drug_death$year)), 
-        max = max(as.integer(drug_death$year)), 
-        value = c(min(as.integer(drug_death$year)),
-                  max(as.integer(drug_death$year))), 
-        step = 1,
-        ticks = F, 
-        sep = "", 
-        dragRange = T
+      uiOutput(
+        "select_cmh"
       )
     )
   ),
@@ -55,18 +45,47 @@ dashboardPage(
               color = "black",
               collapsible = F, 
               width = NULL,
+              selectInput(
+                "cause",
+                label = "Select cause of death:",
+                choices = c("Heroin overdoses",
+                            "Opioid overdoses",
+                            "All overdose deaths"), 
+                selected = "Opioid overdoses"
+              ),
               tabBox(
                 tabPanel(
                   "Pareto",
-                  selectInput(
-                    "cause",
-                    label = "Select cause of death:",
-                    choices = c("Heroin overdoses",
-                                "Opioid overdoses",
-                                "All overdose deaths"), 
-                    selected = "Opioid overdoses"
+                  sliderInput(
+                    "pareto_year", 
+                    "Select year(s)", 
+                    min = min(as.integer(drug_death$year)), 
+                    max = max(as.integer(drug_death$year)), 
+                    value = c(min(as.integer(drug_death$year)[is.na(drug_death$TotalPop)==F]),
+                              max(as.integer(drug_death$year))), 
+                    step = 1,
+                    ticks = F, 
+                    sep = "", 
+                    dragRange = T
                   ),
                   plotlyOutput("death_bar")
+                )
+              ),
+              tabBox(
+                tabPanel(
+                  "Rates",
+                  sliderInput(
+                    "rate_year", 
+                    "Select year(s)", 
+                    min = min(as.integer(drug_death$year[is.na(drug_death$TotalPop)==F])), 
+                    max = max(as.integer(drug_death$year[is.na(drug_death$TotalPop)==F])), 
+                    value = c(min(as.integer(drug_death$year[is.na(drug_death$TotalPop)==F])),
+                              max(as.integer(drug_death$year[is.na(drug_death$TotalPop)==F]))), 
+                    step = 1,
+                    ticks = F, 
+                    sep = "", 
+                    dragRange = T
+                  )
                 )
               )
             )
