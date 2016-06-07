@@ -85,7 +85,8 @@ dashboardPage(
                     ticks = F, 
                     sep = "", 
                     dragRange = T
-                  )
+                  ),
+                  plotlyOutput("death_rate")
                 )
               )
             )

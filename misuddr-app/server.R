@@ -136,12 +136,53 @@ shinyServer(function(input, output) {
                 marker = list(color = "#CD5555"),
                 name = "Cumulative %", 
                 yaxis = "y2") %>%
-      layout(title = input$cause,
+      layout(title = paste0("Frequency of ",input$cause),
              xaxis = list(title = input$group, showticklabels = F,
                           categoryarray = group, categoryorder = "array"),
              yaxis = list(title = "Number of deaths"),
              yaxis2 = list(overlaying = "y", side = "right",
                            ticksuffix = "%", showticklabels = F),
+             legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
+                           font = list(size = 10)))
+    
+  })
+  
+  output$death_rate <- renderPlotly({
+    
+    cause_filt <- if (input$cause == "Heroin overdoses") {
+      c("heroin")
+    } else if (input$cause == "Opioid overdoses") {
+      c("opioid")
+    } else c("alldrug")
+    
+    deaths() %>%
+      filter(cause == cause_filt
+             & year >= input$rate_year[1] 
+             & year <= input$rate_year[2]) %>%
+      ungroup() %>% droplevels() %>%
+      group_by(group,cause) %>%
+      summarize(deaths = sum(deaths, na.rm = T),
+                TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+      ungroup() %>% droplevels() %>%
+      mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
+      ungroup() %>% droplevels() %>%
+      arrange(desc(deaths_per_100k)) %>%
+      mutate(avg_rate = round(sum(deaths, na.rm = T)/sum(TotalPop, na.rm = T)*100000,
+                              digits = 1)) %>%
+      plot_ly(x = group, y = deaths_per_100k, type = "bar",
+              marker = list(color = "#CD5C5C"),
+              name = "Rate per 100k") %>%
+      add_trace(x = group, 
+                y = rep(avg_rate, each = nlevels(as.factor(group))), 
+                type = "line",
+                line = list(dash = 5),
+                marker = list(color = "#555555"),
+                name = "Average Rate", 
+                yaxis = "y") %>%
+      layout(title = paste0("Rate of ",input$cause),
+             xaxis = list(title = input$group, showticklabels = F,
+                          categoryarray = group, categoryorder = "array"),
+             yaxis = list(title = "Deaths per 100,000 population"),
              legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
                            font = list(size = 10)))
     
