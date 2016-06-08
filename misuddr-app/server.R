@@ -153,15 +153,29 @@ shinyServer(function(input, output) {
     
     paste0(
       "The chart above shows the number of ",
-      tolower(input$cause), " for the region managed by ", 
-      input$select_cmh, " CMH(s) in ", 
-      input$select_pihp, " PIHP(s).",
-      "  The bars in the chart are grouped by ",
-      input$group, " and include data for the years of ",
+      tolower(input$cause), " for the region served by ", 
+      ifelse(input$select_cmh == "All",
+             yes = paste0(tolower(input$select_cmh), " CMHs "),
+             no = paste0(" the CMH of ", input$select_cmh,",")), 
+      " managed by ",
+      ifelse(input$select_pihp == "All",
+             yes = paste0(input$select_pihp, " PIHPs "),
+             no = paste0(" the PIHP of ", input$select_pihp)),
+      ".  Each bar in the chart represents a single ",
+      ifelse(input$group == "County",tolower(input$group),input$group), 
+      " and includes data for the years of ",
       input$pareto_year[1], " through ", input$pareto_year[2], ".",
       "  The line chart overlaid on the bars shows the cumulative 
-      percentage of all statewide ", tolower(input$cause), 
-      " moving from left to right across the chart."
+      percentage of all ", tolower(input$cause), 
+      " for the selected region (i.e. ",
+      ifelse(input$select_cmh == "All",
+             yes = paste0(tolower(input$select_cmh), " CMHs "),
+             no = paste0(" the CMH of ", input$select_cmh)),
+      " within ",
+      ifelse(input$select_pihp == "All",
+             yes = paste0(input$select_pihp, " PIHPs "),
+             no = paste0(" the PIHP of ", input$select_pihp)),
+      "), moving from left to right across the chart."
     )
     
   })
@@ -213,17 +227,29 @@ shinyServer(function(input, output) {
     paste0(
       "The chart above shows the number of ",
       tolower(input$cause), 
-      " per 100,000 people in the general population of the region managed by ", 
-      input$select_cmh, " CMH(s) in ", 
-      input$select_pihp, " PIHP(s).",
-      "  The bars in the chart are grouped by ",
-      input$group, " and include data for the years of ",
+      " per 100,000 people in the general population of the region served by ", 
+      ifelse(input$select_cmh == "All",
+             yes = paste0(tolower(input$select_cmh), " CMHs "),
+             no = paste0(" the CMH of ", input$select_cmh,",")), 
+      " managed by ",
+      ifelse(input$select_pihp == "All",
+             yes = paste0(input$select_pihp, " PIHPs "),
+             no = paste0(" the PIHP of ", input$select_pihp)),
+      ".  Each bar in the chart represents a single ",
+      ifelse(input$group == "County",tolower(input$group),input$group), 
+      " and includes data for the years of ",
       input$rate_year[1], " through ", input$rate_year[2], ".",
       "  The dotted line overlaid on the bars shows the average rate of ",
       tolower(input$cause), " per 100,000 across the ", 
-      input$group, " groups selected and the filters applied (i.e. ", 
-      input$select_cmh, " CMH(s) and ", 
-      input$select_pihp, " PIHP(s))."
+      ifelse(input$group == "County",tolower(input$group),input$group), 
+      " groups selected and the filters applied (i.e. ", 
+      ifelse(input$select_cmh == "All",
+             yes = paste0(tolower(input$select_cmh), " CMHs "),
+             no = paste0(" the CMH of ", input$select_cmh)),
+      " within ",
+      ifelse(input$select_pihp == "All",
+             yes = paste0(input$select_pihp, " PIHPs "),
+             no = paste0(" the PIHP of ", input$select_pihp)),")."
     )
     
   })
