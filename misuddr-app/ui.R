@@ -141,43 +141,6 @@ dashboardPage(
               ),
               tabBox(
                 tabPanel(
-                  "Pareto",
-                  sliderInput(
-                    "pareto_year", 
-                    "Select year(s)", 
-                    min = min(as.integer(drug_death$year)), 
-                    max = max(as.integer(drug_death$year)), 
-                    value = c(min(as.integer(drug_death$year)[is.na(drug_death$TotalPop)==F]),
-                              max(as.integer(drug_death$year))), 
-                    step = 1,
-                    ticks = F, 
-                    sep = "", 
-                    dragRange = T
-                  ),
-                  plotlyOutput("death_bar"),
-                  br(),
-                  h5(textOutput("define_pareto"))
-                ),
-                tabPanel(
-                  "About",
-                  h4("Pareto Charts"),
-                  p(
-                    a(href = "https://en.wikipedia.org/wiki/Pareto_chart",
-                      "Pareto charts"),
-                    " are a type of mixed bar-and-line diagram which arranges 
-                    various factors according to the magnitude of their impact. 
-                    The chart is a visual display of the ", 
-                    em("Pareto Principle"), 
-                    ", which states that a small number of members of a group 
-                    often account for the majority of the effect. Using a 
-                    Pareto chart can help teams to focus on factors that have 
-                    the greatest effect and communicate the reason for their 
-                    focus."
-                  )
-                )
-              ),
-              tabBox(
-                tabPanel(
                   "Rates",
                   sliderInput(
                     "rate_year", 
@@ -221,6 +184,43 @@ dashboardPage(
                   p(
                     "Currently, only years from 2009 onward are available for 
                     download from the Census API."
+                  )
+                )
+              ),
+              tabBox(
+                tabPanel(
+                  "Pareto",
+                  sliderInput(
+                    "pareto_year", 
+                    "Select year(s)", 
+                    min = min(as.integer(drug_death$year)), 
+                    max = max(as.integer(drug_death$year)), 
+                    value = c(min(as.integer(drug_death$year)[is.na(drug_death$TotalPop)==F]),
+                              max(as.integer(drug_death$year))), 
+                    step = 1,
+                    ticks = F, 
+                    sep = "", 
+                    dragRange = T
+                  ),
+                  plotlyOutput("death_bar"),
+                  br(),
+                  h5(textOutput("define_pareto"))
+                ),
+                tabPanel(
+                  "About",
+                  h4("Pareto Charts"),
+                  p(
+                    a(href = "https://en.wikipedia.org/wiki/Pareto_chart",
+                      "Pareto charts"),
+                    " are a type of mixed bar-and-line diagram which arranges 
+                    various factors according to the magnitude of their impact. 
+                    The chart is a visual display of the ", 
+                    em("Pareto Principle"), 
+                    ", which states that a small number of members of a group 
+                    often account for the majority of the effect. Using a 
+                    Pareto chart can help teams to focus on factors that have 
+                    the greatest effect and communicate the reason for their 
+                    focus."
                   )
                 )
               )
