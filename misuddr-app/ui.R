@@ -22,7 +22,7 @@ dashboardPage(
         icon = icon("line-chart")
       ),
       menuItem(
-        "Now What?", 
+        "What next?", 
         tabName = "next", 
         icon = icon("hourglass-end")
       ),
