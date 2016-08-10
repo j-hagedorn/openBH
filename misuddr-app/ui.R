@@ -65,7 +65,8 @@ dashboardPage(
             box(
               title = "Local Focus", 
               color = "black",
-              collapsible = T, 
+              collapsible = T,
+              collapsed = F,
               width = NULL,
               p(
                 "Michigan was one of a handful of states to show a statistically 
@@ -97,6 +98,7 @@ dashboardPage(
               title = "Getting Started", 
               color = "black",
               collapsible = T, 
+              collapsed = T,
               width = NULL,
               p(
                 "Select the ", em("Compare"), " and ", em("Trend"), 
@@ -116,6 +118,49 @@ dashboardPage(
                   "by PIHP"), " or ",
                 a(href = "http://www.michigan.gov/mdhhs/0,5885,7-339-71550_2941_4868_4899-178824--,00.html",
                   "by CMH")
+              )
+            ),
+            box(
+              title = "Data Definitions", 
+              color = "black",
+              collapsible = T, 
+              collapsed = T,
+              width = NULL,
+              p(
+                strong("Drug poisoning deaths"), " are defined as having ICD-10 
+                underlying cause of death codes within the following ranges:",
+                tags$ul(
+                  tags$li("X40-X44 (", em("unintentional"),")"),
+                  tags$li("X60-X64 (", em("intentional"),")"),
+                  tags$li("X85 (", em("homicide"),")"),
+                  tags$li("Y10-Y14 (", em("undetermined intent"),")")
+                )
+              ),
+              p(
+                strong("Heroin deaths"), 
+                " include those with ICD-10 related cause code T40.1. 
+                Heroin-related deaths include: ", 
+                tags$ul(
+                  tags$li("Heroin without cocaine or opioid"),
+                  tags$li("Heroin and cocaine without opioid")
+                ) 
+              ),
+              p(
+                strong("Opioid deaths"),
+                " include those with ICD-10 related code T40.2-T40.4.  
+                Opioid-related deaths include:",
+                tags$ul(
+                  tags$li("Opioid without heroin or cocaine"),
+                  tags$li("Opioid with heroin, without cocaine"),
+                  tags$li("Opioid with cocaine, without heroin"),
+                  tags$li("Opioid with heroin and cocaine")
+                ) 
+              ),
+              p(
+                strong("Data source"),": ",
+                em("Michigan Death Certificates, Division for Vital Records and 
+                   Health Statistics, Michigan Department of Health and Human 
+                   Services")
               )
             )
           )
