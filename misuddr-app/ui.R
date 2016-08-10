@@ -21,6 +21,11 @@ dashboardPage(
         tabName = "trend", 
         icon = icon("line-chart")
       ),
+      menuItem(
+        "Now What?", 
+        tabName = "next", 
+        icon = icon("hourglass-end")
+      ),
       selectInput(
         "group",
         label = "Group by:",
@@ -301,6 +306,133 @@ dashboardPage(
                   ),
                   plotlyOutput("line_group")
                 )
+              )
+            )
+          )
+        )
+      ),
+      tabItem(
+        tabName = "next",
+        fluidRow(
+          column(
+            width = 12,
+            p(
+              "Each death from the disease of addiction is preventable. 
+              Reducing the number of overdose deaths requires that we battle 
+              stigma, improve access to care, and ensure that high quality 
+              care is provided. Knowledge without action rings hollow. 
+              We encourage you to take the information provided here and use 
+              it to begin dialogue about how your organization or community 
+              can tackle this critical issue.  Here are some thoughts to get 
+              started:"
+            ),
+            p(
+              strong("Communicate"),": Share the information with others in 
+              your organization or community (", 
+              em("e.g. primary care providers, SUD service providers, 
+                 hospital systems, Recovery Oriented System of Care groups, 
+                 healthcare coalitions, community collaborative groups, 
+                 educational systems, public health systems, etc. "),")."
+            ),
+            p(
+              strong("Choose to Act"),": Determine how your organization or 
+              other community stakeholders want to take any action in response 
+              to this data. You may decide action is needed due to having a 
+              higher than average rate of overdose deaths compared to your 
+              region or the state. However, even if your catchment area has a 
+              lower than average rate of overdose deaths, each of these deaths 
+              is preventable and every community can tackle this issue to work 
+              towards a reduction in deaths. Responses could include the 
+              following (", em("Expand boxes for details"), "):"
+            ),
+            box(
+              title = "Community Collaboration",
+              color = "black",
+              collapsible = T, 
+              collapsed = T,
+              width = NULL,
+              tags$ul(
+                tags$li("Complete a root cause analysis with input from 
+                        various community members and stakeholders to 
+                        identify possible causes of overdose deaths in 
+                        your community"),
+                tags$li("Engage in cross-agency prevention and control 
+                        initiatives, including data sharing as appropriate 
+                        (for one example of a prevention initiative, see ",
+                        a(href = "https://www.dea.gov/take-back/takeback-news.shtml",
+                          "National Prescription Drug Take Back Day"),")")
+              )
+            ),
+            box(
+              title = "Education",
+              color = "black",
+              collapsible = T, 
+              collapsed = T,
+              width = NULL,
+              tags$ul(
+                tags$li("Give providers education around evidence-based 
+                        practices (see ",
+                        a(href = "http://www.cdc.gov/mmwr/volumes/65/rr/rr6501e1.htm",
+                          "CDC Guidelines for Prescribing Opioids for Chronic Pain"), ", ",
+                        a(href = "http://www.fda.gov/Drugs/DrugSafety/InformationbyDrugClass/ucm330614.htm",
+                          "U.S. FDA notice to all prescribers"), ", ",
+                        a(href = "http://store.samhsa.gov/product/Opioid-Overdose-Prevention-Toolkit-Updated-2016/All-New-Products/SMA16-4742",
+                          "SAMHSA resources for prescribers"), 
+                        " including free courses, mentoring, and Treatment 
+                        Improvement Protocols)"),
+                tags$li("Provide education to healthcare leaders (see example of 
+                        Wisconsin’s efforts in this area:", 
+                        a(href = "http://www.wha.org/opioid.aspx",
+                          "Hospital Association Resource Page"),")"),
+                tags$li("Provide education to community members around opioid 
+                        abuse (see ",
+                        a(href = "http://store.samhsa.gov/shin/content/SMA16-4742/FactsforCommunityMembers.pdf",
+                          "SAMHSA’s Facts for Community Members"),")"),
+                tags$li("Engage in anti-stigma efforts ")
+              )
+            ),
+            box(
+              title = "Services",
+              color = "black",
+              collapsible = T, 
+              collapsed = T,
+              width = NULL,
+              tags$ul(
+                tags$li("Promote high-quality, outcomes driven SUD services"),
+                tags$li("Increase the use of non-pharmacological pain 
+                        management interventions"),
+                tags$li("Improve access to the full array of SUD services, 
+                        including MAT"),
+                tags$li("Support access to Naloxone to reduce overdose deaths (see ",
+                        a(href = "http://www.integration.samhsa.gov/opioid_toolkit_firstresponders.pdf",
+                          "SAMHSA’s 5 Essential Steps for First Responders"),")"),
+                tags$li("Implement emergency department care guidelines and/or 
+                        patient care plans related to pain management")
+              )
+            ),
+            box(
+              title = "Effective Use of Data",
+              color = "black",
+              collapsible = T, 
+              collapsed = T,
+              width = NULL,
+              tags$ul(
+                tags$li("Analyze additional data (e.g. prescribing practices for 
+                        opioids by local providers, utilization patterns by 
+                        patients, penetration rates for SUD services, 
+                        SUD-related emergency department utilization, etc.) 
+                        to gather a deep understanding of the issue"),
+                tags$li("Continue to monitor the data via a designated forum at 
+                        a specific frequency (e.g. annual review by local 
+                        healthcare coalition as a part of the community needs 
+                        assessment)"),
+                tags$li("Track current opioid-related data flow within local 
+                        community and complete a gap analysis to determine where 
+                        data-sharing is needed"),
+                tags$li("Consider implementing quality measures related to 
+                        Opioid prescribing practices (see ",
+                        a(href = "http://pqaalliance.org/measures/default.asp",
+                          "PCA measures)"),")")
               )
             )
           )
