@@ -112,9 +112,9 @@ shinyServer(function(input, output) {
   
   output$death_rate <- renderPlotly({
     
-    cause_filt <- if (input$cause == "Heroin overdoses") {
+    cause_filt <- if (input$cause == "Heroin overdose deaths") {
       c("heroin")
-    } else if (input$cause == "Opioid overdoses") {
+    } else if (input$cause == "Opioid overdose deaths") {
       c("opioid")
     } else c("alldrug")
     
@@ -186,9 +186,9 @@ shinyServer(function(input, output) {
   
   output$death_bar <- renderPlotly({
     
-    cause_filt <- if (input$cause == "Heroin overdoses") {
+    cause_filt <- if (input$cause == "Heroin overdose deaths") {
       c("heroin")
-    } else if (input$cause == "Opioid overdoses") {
+    } else if (input$cause == "Opioid overdose deaths") {
       c("opioid")
     } else c("alldrug")
       
@@ -284,9 +284,9 @@ shinyServer(function(input, output) {
   
   output$line_group <- renderPlotly({
     
-    cause_filt <- if (input$cause_line == "Heroin overdoses") {
+    cause_filt <- if (input$cause_line == "Heroin overdose deaths") {
       c("heroin")
-    } else if (input$cause_line == "Opioid overdoses") {
+    } else if (input$cause_line == "Opioid overdose deaths") {
       c("opioid")
     } else c("alldrug")
     
@@ -305,7 +305,7 @@ shinyServer(function(input, output) {
               text = paste("Number of deaths: ", deaths,
                            "<br>Total population: ", TotalPop),
               line = list(shape = "spline")) %>%
-      layout(title = paste0("Trend of overdose deaths by ", input$group),
+      layout(title = paste0("Trend of ",input$cause_line," by ",input$group),
              xaxis = list(title = "Year"),
              yaxis = list(title = "Deaths per 100,000 population",
                           range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),

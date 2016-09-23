@@ -184,8 +184,8 @@ dashboardPage(
               selectInput(
                 "cause",
                 label = "Select cause of death:",
-                choices = c("Heroin overdoses",
-                            "Opioid overdoses",
+                choices = c("Heroin overdose deaths",
+                            "Opioid overdose deaths",
                             "All overdose deaths"), 
                 selected = "Opioid overdoses"
               ),
@@ -299,8 +299,8 @@ dashboardPage(
                   selectInput(
                     "cause_line",
                     label = "Select cause of death:",
-                    choices = c("Heroin overdoses",
-                                "Opioid overdoses",
+                    choices = c("Heroin overdose deaths",
+                                "Opioid overdose deaths",
                                 "All overdose deaths"), 
                     selected = "Opioid overdoses"
                   ),
