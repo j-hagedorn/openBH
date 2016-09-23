@@ -292,7 +292,12 @@ dashboardPage(
                 width = NULL,
                 tabPanel(
                   "By Cause",
-                  plotlyOutput("line_cause")
+                  plotlyOutput("line_cause"),
+                  br(),
+                  p(
+                    strong("Note:"), "Please be aware that the ",em("Group By"), 
+                    "dropdown filter does not impact the chart in this view."
+                  )
                 ),
                 tabPanel(
                   "By Group",
