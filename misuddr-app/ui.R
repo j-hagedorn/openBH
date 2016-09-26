@@ -206,6 +206,15 @@ dashboardPage(
                   ),
                   plotlyOutput("death_rate"),
                   br(),
+                  box(
+                    title = "View Table", 
+                    color = "black",
+                    collapsible = T, 
+                    collapsed = T,
+                    width = NULL,
+                    DT::dataTableOutput("death_rate_tbl")
+                  ),
+                  br(),
                   h5(textOutput("define_rate"))
                 ),
                 tabPanel(
@@ -253,6 +262,15 @@ dashboardPage(
                     dragRange = T
                   ),
                   plotlyOutput("death_bar"),
+                  br(),
+                  box(
+                    title = "View Table", 
+                    color = "black",
+                    collapsible = T, 
+                    collapsed = T,
+                    width = NULL,
+                    DT::dataTableOutput("death_bar_tbl")
+                  ),
                   br(),
                   h5(textOutput("define_pareto"))
                 ),

@@ -152,6 +152,39 @@ shinyServer(function(input, output) {
     
   })
   
+  output$death_rate_tbl <- renderDataTable({
+    
+    cause_filt <- if (input$cause == "Heroin overdose deaths") {
+      c("heroin")
+    } else if (input$cause == "Opioid overdose deaths") {
+      c("opioid")
+    } else c("alldrug")
+    
+    deaths() %>%
+      filter(cause == cause_filt
+             & year >= input$rate_year[1] 
+             & year <= input$rate_year[2]) %>%
+      ungroup() %>% droplevels() %>%
+      group_by(group,cause) %>%
+      summarize(deaths = sum(deaths, na.rm = T),
+                TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+      ungroup() %>% droplevels() %>%
+      mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
+      ungroup() %>% droplevels() %>%
+      arrange(desc(deaths_per_100k)) %>%
+      mutate(avg_rate = round(sum(deaths, na.rm = T)/sum(TotalPop, na.rm = T)*100000,
+                              digits = 1)) %>%
+      select(-cause,-avg_rate) %>%
+      datatable(caption = paste0("Rate of ",tolower(input$cause),
+                                 " by ",input$group,
+                                 " (",input$rate_year[1],
+                                 "-",input$rate_year[2],")"),
+                colnames = c('Group', 'Deaths', 'Total Population', 
+                             'Deaths per 100k population'),
+                rownames = FALSE) 
+    
+  })
+  
   output$define_rate <- renderText({
     
     paste0(
@@ -220,6 +253,36 @@ shinyServer(function(input, output) {
                            range = c(0, max(cum_pct)*1.1)),
              legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
                            font = list(size = 10)))
+    
+  })
+  
+  output$death_bar_tbl <- renderDataTable({
+    
+    cause_filt <- if (input$cause == "Heroin overdose deaths") {
+      c("heroin")
+    } else if (input$cause == "Opioid overdose deaths") {
+      c("opioid")
+    } else c("alldrug")
+    
+    deaths() %>%
+      filter(cause == cause_filt
+             & year >= input$pareto_year[1] 
+             & year <= input$pareto_year[2]) %>%
+      group_by(group,cause) %>%
+      summarize(deaths = sum(deaths, na.rm = T)) %>%
+      ungroup() %>% droplevels() %>%
+      mutate(pct_deaths = round(deaths/sum(deaths)*100, digits = 1)) %>%
+      ungroup() %>% droplevels() %>%
+      arrange(desc(deaths)) %>%
+      mutate(cum_pct = cumsum(pct_deaths)) %>%
+      select(-cause) %>%
+      datatable(caption = paste0("Frequency of ",tolower(input$cause),
+                                 " by ",input$group,
+                                 " (",input$pareto_year[1],
+                                 "-",input$pareto_year[2],")"),
+                colnames = c('Group', 'Deaths', 'Percent of deaths', 
+                             'Cumulative pct'),
+                rownames = FALSE) 
     
   })
   
