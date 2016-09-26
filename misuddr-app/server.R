@@ -256,6 +256,15 @@ shinyServer(function(input, output) {
   
   output$line_cause <- renderPlotly({
     
+    notetxt <- paste0("Annual overdose deaths per 1,000 population",
+                      "<br>for the region served by ",
+                      ifelse(input$select_cmh == "All",
+                             yes = paste0(tolower(input$select_cmh), " CMHs "),
+                             no = paste0(" the CMH of ", input$select_cmh,",")),
+                      ifelse(input$select_pihp == "All",
+                             yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
+                             no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
+    
     deaths() %>%
       filter(is.na(TotalPop) == F) %>%
       droplevels() %>% ungroup() %>%
@@ -278,7 +287,12 @@ shinyServer(function(input, output) {
              xaxis = list(title = "Year"),
              yaxis = list(title = "Deaths per 100,000 population",
                           range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
-             legend = list(font = list(size = 10)))
+             legend = list(font = list(size = 10)),
+             annotations = list(
+               list(x = min(year), xanchor = "left", 
+                    y = 1, yanchor = "top", yref = "paper",
+                    showarrow = F, align = "left",
+                    text = notetxt)))
     
   })
   
@@ -290,6 +304,15 @@ shinyServer(function(input, output) {
       c("opioid")
     } else c("alldrug")
     
+    notetxt <- paste0("Annual ",tolower(input$cause_line)," per 1,000 population",
+      "<br>for the region served by ", 
+      ifelse(input$select_cmh == "All",
+             yes = paste0(tolower(input$select_cmh), " CMHs "),
+             no = paste0(" the CMH of ", input$select_cmh,",")), 
+      ifelse(input$select_pihp == "All",
+             yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
+             no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
+      
     deaths() %>%
       filter(is.na(TotalPop) == F
              & cause %in% cause_filt) %>%
@@ -309,7 +332,12 @@ shinyServer(function(input, output) {
              xaxis = list(title = "Year"),
              yaxis = list(title = "Deaths per 100,000 population",
                           range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
-             legend = list(font = list(size = 10)))
+             legend = list(font = list(size = 10)),
+             annotations = list(
+               list(x = min(year), xanchor = "left", 
+                    y = 1, yanchor = "top", yref = "paper",
+                    showarrow = F, align = "left",
+                    text = notetxt)))
     
   })
   
