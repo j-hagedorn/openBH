@@ -306,6 +306,11 @@ dashboardPage(
               color = "black",
               collapsible = F, 
               width = NULL,
+              radioButtons(
+                "radio_measure", 
+                label = h4("Measure:"),
+                choices = c("Rate per 100k","Percent change"), 
+                selected = "Percent change"),
               tabBox(
                 width = NULL,
                 tabPanel(
