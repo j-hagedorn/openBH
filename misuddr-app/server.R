@@ -16,8 +16,7 @@ shinyServer(function(input, output) {
 
     deaths <-
     drug_death %>%
-      filter(PIHPname %in% pihp_filt
-             & CMHSP %in% cmh_filt)
+      filter(PIHPname %in% pihp_filt & CMHSP %in% cmh_filt)
     
     if (input$group == "County") {
       
@@ -319,43 +318,92 @@ shinyServer(function(input, output) {
   
   output$line_cause <- renderPlotly({
     
-    notetxt <- paste0("Annual overdose deaths per 1,000 population",
-                      "<br>for the region served by ",
-                      ifelse(input$select_cmh == "All",
-                             yes = paste0(tolower(input$select_cmh), " CMHs "),
-                             no = paste0(" the CMH of ", input$select_cmh,",")),
-                      ifelse(input$select_pihp == "All",
-                             yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
-                             no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
-    
-    deaths() %>%
-      filter(is.na(TotalPop) == F) %>%
-      droplevels() %>% ungroup() %>%
-      group_by(year,cause) %>%
-      summarize(deaths = sum(deaths, na.rm = T),
-                TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
-      ungroup() %>% droplevels() %>%
-      mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
-      ungroup() %>% droplevels() %>%
-      mutate(cause = recode(cause,
-                            "'opioid' = 'Opioids';
-                            'heroin' = 'Heroin';
-                            'alldrug' = 'Any drug'")) %>%
-      plot_ly(x = year, y = deaths_per_100k, color = cause,
-              name = "Rate per 100k", 
-              text = paste("Number of deaths: ", deaths,
-                           "<br>Total population: ", TotalPop),
-              line = list(shape = "spline")) %>%
-      layout(title = paste0("Trend of overdose deaths by cause"),
-             xaxis = list(title = "Year"),
-             yaxis = list(title = "Deaths per 100,000 population",
-                          range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
-             legend = list(font = list(size = 10)),
-             annotations = list(
-               list(x = min(year), xanchor = "left", 
-                    y = 1, yanchor = "top", yref = "paper",
-                    showarrow = F, align = "left",
-                    text = notetxt)))
+    if (input$radio_measure == "Rate per 100k") {
+      
+      notetxt <- paste0("Annual overdose deaths per 1,000 population",
+                        "<br>for the region served by ",
+                        ifelse(input$select_cmh == "All",
+                               yes = paste0(tolower(input$select_cmh), " CMHs "),
+                               no = paste0(" the CMH of ", input$select_cmh,",")),
+                        ifelse(input$select_pihp == "All",
+                               yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
+                               no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
+      
+      deaths() %>%
+        filter(is.na(TotalPop) == F) %>%
+        droplevels() %>% ungroup() %>%
+        group_by(year,cause) %>%
+        summarize(deaths = sum(deaths, na.rm = T),
+                  TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+        ungroup() %>% droplevels() %>%
+        mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1),
+               pct_chg = round((deaths-lag(deaths))/lag(deaths)*100, 
+                               digits = 1)) %>%
+        ungroup() %>% droplevels() %>%
+        mutate(cause = recode(cause,
+                              "'opioid' = 'Opioids';
+                              'heroin' = 'Heroin';
+                              'alldrug' = 'Any drug'")) %>%
+        plot_ly(x = year, y = deaths_per_100k, color = cause,
+                name = "Rate per 100k", 
+                text = paste("Number of deaths: ", deaths,
+                             "<br>Total population: ", TotalPop),
+                line = list(shape = "spline")) %>%
+        layout(title = paste0("Trend of overdose deaths by cause"),
+               xaxis = list(title = "Year"),
+               yaxis = list(title = "Deaths per 100,000 population",
+                            range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
+               legend = list(font = list(size = 10)),
+               annotations = list(
+                 list(x = min(year), xanchor = "left", 
+                      y = 1, yanchor = "top", yref = "paper",
+                      showarrow = F, align = "left",
+                      text = notetxt)))
+      
+    } else if (input$radio_measure == "Percent change") {
+      
+      notetxt <- paste0("Percent change in annual overdose deaths",
+                        "<br>compared to the previous year",
+                        "<br>for the region served by ",
+                        ifelse(input$select_cmh == "All",
+                               yes = paste0(tolower(input$select_cmh), " CMHs "),
+                               no = paste0(" the CMH of ", input$select_cmh,",")),
+                        ifelse(input$select_pihp == "All",
+                               yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
+                               no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
+      
+      deaths() %>%
+        droplevels() %>% ungroup() %>%
+        group_by(cause,year) %>%
+        summarize(deaths = sum(deaths, na.rm = T),
+                  TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+        # Note: ifelse() deals with instances where the number in the calculation
+        # is zero, yielding NaN values. In these instances, the denominator is set to 1
+        # so that a change from 0 to 1 would be considered a 100% change
+        mutate(pct_chg = round((deaths-lag(deaths))/ifelse(lag(deaths)==0,1,lag(deaths))*100, 
+                               digits = 1)) %>%
+        ungroup() %>% droplevels() %>%
+        mutate(cause = recode(cause,
+                              "'opioid' = 'Opioids';
+                              'heroin' = 'Heroin';
+                              'alldrug' = 'Any drug'")) %>%
+        plot_ly(x = year, y = pct_chg, color = cause,
+                name = "Rate per 100k", 
+                text = paste("# deaths: ", deaths,
+                             "<br># deaths (prev yr): ", lag(deaths)),
+                line = list(shape = "spline")) %>%
+        layout(title = paste0("Trend of overdose deaths by cause"),
+               xaxis = list(title = "Year"),
+               yaxis = list(title = "Percent change since prior year",
+                            range = c(0, max(pct_chg,na.rm=F)*1.1)),
+               legend = list(font = list(size = 10)),
+               annotations = list(
+                 list(x = min(year), xanchor = "left", 
+                      y = 1, yanchor = "top", yref = "paper",
+                      showarrow = F, align = "left",
+                      text = notetxt)))
+      
+    } else paste0("Unexpected input.")
     
   })
   
@@ -367,40 +415,84 @@ shinyServer(function(input, output) {
       c("opioid")
     } else c("alldrug")
     
-    notetxt <- paste0("Annual ",tolower(input$cause_line)," per 1,000 population",
-      "<br>for the region served by ", 
-      ifelse(input$select_cmh == "All",
-             yes = paste0(tolower(input$select_cmh), " CMHs "),
-             no = paste0(" the CMH of ", input$select_cmh,",")), 
-      ifelse(input$select_pihp == "All",
-             yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
-             no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
+    if (input$radio_measure == "Rate per 100k") {
       
-    deaths() %>%
-      filter(is.na(TotalPop) == F
-             & cause %in% cause_filt) %>%
-      droplevels() %>% ungroup() %>%
-      group_by(year,group) %>%
-      summarize(deaths = sum(deaths, na.rm = T),
-                TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
-      ungroup() %>% droplevels() %>%
-      mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
-      ungroup() %>% droplevels() %>%
-      plot_ly(x = year, y = deaths_per_100k, color = group,
-              name = "Rate per 100k",
-              text = paste("Number of deaths: ", deaths,
-                           "<br>Total population: ", TotalPop),
-              line = list(shape = "spline")) %>%
-      layout(title = paste0("Trend of ",input$cause_line," by ",input$group),
-             xaxis = list(title = "Year"),
-             yaxis = list(title = "Deaths per 100,000 population",
-                          range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
-             legend = list(font = list(size = 10)),
-             annotations = list(
-               list(x = min(year), xanchor = "left", 
-                    y = 1, yanchor = "top", yref = "paper",
-                    showarrow = F, align = "left",
-                    text = notetxt)))
+      notetxt <- paste0("Annual ",tolower(input$cause_line)," per 1,000 population",
+                        "<br>for the region served by ", 
+                        ifelse(input$select_cmh == "All",
+                               yes = paste0(tolower(input$select_cmh), " CMHs "),
+                               no = paste0(" the CMH of ", input$select_cmh,",")), 
+                        ifelse(input$select_pihp == "All",
+                               yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
+                               no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
+      
+      deaths() %>%
+        filter(is.na(TotalPop) == F
+               & cause %in% cause_filt) %>%
+        droplevels() %>% ungroup() %>%
+        group_by(year,group) %>%
+        summarize(deaths = sum(deaths, na.rm = T),
+                  TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+        ungroup() %>% droplevels() %>%
+        mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
+        ungroup() %>% droplevels() %>%
+        plot_ly(x = year, y = deaths_per_100k, color = group,
+                name = "Rate per 100k",
+                text = paste("Number of deaths: ", deaths,
+                             "<br>Total population: ", TotalPop),
+                line = list(shape = "spline")) %>%
+        layout(title = paste0("Trend of ",input$cause_line," by ",input$group),
+               xaxis = list(title = "Year"),
+               yaxis = list(title = "Deaths per 100,000 population",
+                            range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
+               legend = list(font = list(size = 10)),
+               annotations = list(
+                 list(x = min(year), xanchor = "left", 
+                      y = 1, yanchor = "top", yref = "paper",
+                      showarrow = F, align = "left",
+                      text = notetxt)))
+      
+    } else if (input$radio_measure == "Percent change") {
+      
+      notetxt <- paste0("Percent change in annual overdose deaths",
+                        "<br>compared to the previous year",
+                        "<br>for the region served by ", 
+                        ifelse(input$select_cmh == "All",
+                               yes = paste0(tolower(input$select_cmh), " CMHs "),
+                               no = paste0(" the CMH of ", input$select_cmh,",")), 
+                        ifelse(input$select_pihp == "All",
+                               yes = paste0("<br>managed by ",tolower(input$select_pihp)," PIHPs "),
+                               no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
+      
+      deaths() %>%
+        filter(cause %in% cause_filt) %>%
+        droplevels() %>% ungroup() %>%
+        group_by(group,year) %>%
+        summarize(deaths = sum(deaths, na.rm = T),
+                  TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+        # Note: ifelse() deals with instances where the number in the calculation
+        # is zero, yielding NaN values. In these instances, the denominator is set to 1
+        # so that a change from 0 to 1 would be considered a 100% change
+        mutate(pct_chg = round((deaths-lag(deaths))/ifelse(lag(deaths)==0,1,lag(deaths))*100, 
+                               digits = 1)) %>%
+        ungroup() %>% droplevels() %>%
+        plot_ly(x = year, y = pct_chg, color = group,
+                name = "Percent change since prior year",
+                text = paste("# of deaths: ", deaths,
+                             "<br># deaths (prev yr): ", lag(deaths)),
+                line = list(shape = "spline")) %>%
+        layout(title = paste0("Trend of ",input$cause_line," by ",input$group),
+               xaxis = list(title = "Year"),
+               yaxis = list(title = "Percent change since prior year",
+                            range = c(0, max(pct_chg,na.rm=F)*1.1)),
+               legend = list(font = list(size = 10)),
+               annotations = list(
+                 list(x = min(year), xanchor = "left", 
+                      y = 1, yanchor = "top", yref = "paper",
+                      showarrow = F, align = "left",
+                      text = notetxt)))
+      
+    } else paste0("Unexpected input.")
     
   })
   
