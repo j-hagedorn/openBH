@@ -13,4 +13,4 @@ accountInfo("tbdsolutions")
 
 applications("tbdsolutions")
 applications("joshh")
-# terminateApp("exec-dash", account = "joshh", quiet = FALSE)
+# terminateApp("exploreSIS_node_lrp", account = "joshh", quiet = FALSE)
