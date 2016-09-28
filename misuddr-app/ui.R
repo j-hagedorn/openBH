@@ -184,8 +184,8 @@ dashboardPage(
               selectInput(
                 "cause",
                 label = "Select cause of death:",
-                choices = c("Heroin overdoses",
-                            "Opioid overdoses",
+                choices = c("Heroin overdose deaths",
+                            "Opioid overdose deaths",
                             "All overdose deaths"), 
                 selected = "Opioid overdoses"
               ),
@@ -205,6 +205,15 @@ dashboardPage(
                     dragRange = T
                   ),
                   plotlyOutput("death_rate"),
+                  br(),
+                  box(
+                    title = "View Table", 
+                    color = "black",
+                    collapsible = T, 
+                    collapsed = T,
+                    width = NULL,
+                    DT::dataTableOutput("death_rate_tbl")
+                  ),
                   br(),
                   h5(textOutput("define_rate"))
                 ),
@@ -254,6 +263,15 @@ dashboardPage(
                   ),
                   plotlyOutput("death_bar"),
                   br(),
+                  box(
+                    title = "View Table", 
+                    color = "black",
+                    collapsible = T, 
+                    collapsed = T,
+                    width = NULL,
+                    DT::dataTableOutput("death_bar_tbl")
+                  ),
+                  br(),
                   h5(textOutput("define_pareto"))
                 ),
                 tabPanel(
@@ -288,19 +306,29 @@ dashboardPage(
               color = "black",
               collapsible = F, 
               width = NULL,
+              radioButtons(
+                "radio_measure", 
+                label = h4("Measure:"),
+                choices = c("Rate per 100k","Percent change"), 
+                selected = "Percent change"),
               tabBox(
                 width = NULL,
                 tabPanel(
                   "By Cause",
-                  plotlyOutput("line_cause")
+                  plotlyOutput("line_cause"),
+                  br(),
+                  p(
+                    strong("Note:"), "Please be aware that the ",em("Group By"), 
+                    "dropdown filter does not impact the chart in this view."
+                  )
                 ),
                 tabPanel(
                   "By Group",
                   selectInput(
                     "cause_line",
                     label = "Select cause of death:",
-                    choices = c("Heroin overdoses",
-                                "Opioid overdoses",
+                    choices = c("Heroin overdose deaths",
+                                "Opioid overdose deaths",
                                 "All overdose deaths"), 
                     selected = "Opioid overdoses"
                   ),
