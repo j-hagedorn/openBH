@@ -37,8 +37,9 @@ simpleCap <- function(x) {
 
 # Clean data
 
-tst <-
+site_map_211 <-
 kent_211 %>%
+  filter(is.na(address_1) == F) %>%
   mutate(service_term = as.factor(service_term),
          service_phone_1 = as.character(service_phone_1),
          service_phone_2 = as.character(service_phone_2),
@@ -56,10 +57,12 @@ kent_211 %>%
                           city,", ",state,", ",zip)) %>%
   # Define address variable for use in function
   mutate(address = paste0(toupper(address_1), ", ",
-                          toupper(address_2), ", ",
+                          #toupper(address_2), ", ",
                           toupper(city), ", ",
                           toupper(state), ", ",
-                          zip))
+                          zip)) %>%
+  select(site_name, service_term, address, url) %>%
+  distinct(site_name, .keep_all = T)
 
 
 
@@ -68,15 +71,12 @@ kent_211 %>%
 # Add lat/long of addresses
 library(ggmap)
 
-
-
-
 #initialise a dataframe to hold the results
 geocoded <- data.frame()
 # find out where to start in the address list (if the script was interrupted before):
 # startindex <- 2527
 #if a temp file exists - load it up and count the rows!
-tempfilename <- paste0('addresses_temp_geocoded.rds')
+tempfilename <- paste0('211_temp_geocoded.rds')
 if (file.exists(tempfilename)) {
   print("Found temp file - resuming from index:")
   geocoded <- readRDS(tempfilename)
@@ -85,10 +85,10 @@ if (file.exists(tempfilename)) {
 }
 
 # Start the geocoding process - address by address. geocode() function takes care of query speed limit.
-for (ii in seq(1904, length(geo$address))) {
-  print(paste("Working on index", ii, "of", length(geo$address)))
+for (ii in seq(224, length(site_map_211$address))) {
+  print(paste("Working on index", ii, "of", length(site_map_211$address)))
   #query the google geocoder - this will pause here if we are over the limit.
-  result = geocode(location = geo$address[ii],
+  result = geocode(location = site_map_211$address[ii],
                    output = "latlona", 
                    source = "google") 
   print(result$status)     
@@ -99,6 +99,35 @@ for (ii in seq(1904, length(geo$address))) {
   saveRDS(geocoded, tempfilename)
 }
 # errored on index 334, 408, 546, 720
+
+geocoded %<>% mutate(index = as.character(index))
+
+site_map_211 %<>%
+  mutate(index = as.character(row.names(.))) %>%
+  select(-address) %>%
+  left_join(geocoded, by = "index")
+
+library(leaflet); library(KernSmooth); library(htmltools)
+
+leaflet() %>%
+  fitBounds(
+    lng1 = -86,  
+    lat1 = 44,
+    lng2 = -85,
+    lat2 = 42
+  ) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addMarkers(
+    data = site_map_211,
+    lat = ~lat, 
+    lng = ~lon,
+    popup = paste(sep = "<br/>",
+                  "<b><a href='",
+                  htmlEscape(site_map_211$url),"'>",
+                  htmlEscape(site_map_211$site_name),"</a></b>"),
+    clusterOptions = markerClusterOptions()
+  )
+
 
 #now we add the latitude and longitude to the main data
 geo$lat <- geocoded$lat
