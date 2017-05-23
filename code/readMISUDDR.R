@@ -1,17 +1,13 @@
-library(plyr)
-library(dplyr)
-library(magrittr)
-library(tidyr)
-library(car)
+# library(plyr)
+library(tidyverse); library(magrittr)
 
 ## CLEAN & MERGE DATA
 
-opioid <- read.csv("data/misuddr/Opioid deaths 99-14.csv",
-                   nrows = 1344)
-heroin <- read.csv("data/misuddr/Heroin deaths 99-14.csv",
-                   nrows = 1344)
-alldrug <- read.csv("data/misuddr/Total deaths 99-14.csv",
-                    nrows = 1344)
+opioid <- read.csv("data/misuddr/Opioid deaths 99-15.csv", nrows = 1428)
+
+heroin <- read.csv("data/misuddr/Heroin deaths 99-15.csv", nrows = 1428)
+
+alldrug <- read.csv("data/misuddr/Total deaths 99-15.csv", nrows = 1428)
 
 opioid %<>%
   select(1:3) %>%
@@ -31,22 +27,27 @@ drug_death <-
   opioid %>%
   left_join(heroin, by = "cty_yr") %>%
   left_join(alldrug, by = "cty_yr") %>%
-  select(county = County.Name,
-         year = Year,
-         opioid = Opiod.Deaths,
-         heroin = Heroin.Deaths,
-         alldrug = Total.Poisoning) %>%
+  select(
+    county = County.Name,
+    year = Year,
+    opioid = Opiod.Deaths,
+    heroin = Heroin.Deaths,
+    alldrug = Total.Poisoning
+  ) %>%
   gather(cause, deaths, opioid:alldrug) %>%
-  mutate(year = as.factor(year),
-         county = ifelse(county %in% c("Detroit","Wayne \nexecluding \nDetroit"),
-                         yes = "Wayne", no = as.character(county)),
-         county = recode(county, 
-                         "'Saint Clair'='St. Clair'; 
-                         'Saint Joseph'='St. Joseph'")) %>%
+  mutate(
+    year = as.factor(year),
+    county = ifelse(county %in% c("Detroit","Wayne \nexecluding \nDetroit","Wayne execluding Detroit"),
+                    yes = "Wayne", no = as.character(county)),
+    county = dplyr::recode(county, 
+                    `Saint Clair` = 'St. Clair', 
+                    `Saint Joseph` = 'St. Joseph')
+  ) %>%
   ungroup() %>% droplevels() %>%
   select(county,year,cause,deaths) %>%
-  group_by(county,year,cause) %>%
-  summarise(deaths = sum(deaths)) %>%
+  # group_by(county,year,cause) %>%
+  # summarize(deaths = sum(deaths,na.rm = T)) %>%
+  # ungroup() %>%
   mutate(key = paste0(county,"_",year))
 
 ## Remove unnecessary df
@@ -56,8 +57,6 @@ rm(opioid); rm(heroin); rm(alldrug)
 ## MAP COUNTIES
 
 library(acs)
-library(dplyr)
-library(magrittr)
 
 # Install API key
 api.key.install(census_key, file = "key.rda") # hide key in local environment
@@ -72,7 +71,11 @@ MIbyCounty <- geo.make(state="MI", county=MIcounties) #Define region for acs.fet
 # Get 5-year estimate data for population
 #####
 
-# Use 2012 ACS estimates for 2013 404 population rates, since 2013 ACS data not published yet.
+# Use previous year ACS estimates for most recent years 
+# if ACS data has not been published yet.
+
+MI_2015 <- acs.fetch(endyear = 2015, span = 5, geography=MIbyCounty,  
+                     variable = c('B01001_001','B09001_001'), col.names = "auto")
 
 MI_2014 <- acs.fetch(endyear = 2014, 
                      span = 5, # x-year estimate
@@ -101,6 +104,13 @@ MI_2009 <- acs.fetch(endyear = 2009, span = 5, geography=MIbyCounty,
 
 # Make a dataframe
 #####
+
+# ...for 2015
+MI_df_15 <- data.frame(estimate(MI_2015))
+colnames(MI_df_15)=c("TotalPop","Under18")
+MI_df_15$Year <- 2015  #add year variable
+MI_df_15$County <- rownames(MI_df_15) #create new var using rownames
+rownames(MI_df_15) <- NULL #nullify existing rownames
 
 # ...for 2014
 MI_df_14 <- data.frame(estimate(MI_2014))
@@ -144,17 +154,17 @@ MI_df_09$Year <- endyear(MI_2009)  #add year variable
 MI_df_09$County <- rownames(MI_df_09) #create new var using rownames
 rownames(MI_df_09) <- NULL #nullify existing rownames
 
-MI_df <- rbind(MI_df_14,MI_df_13,MI_df_12,MI_df_11,MI_df_10,MI_df_09) #bind the 4 years together
+MI_df <- rbind(MI_df_15,MI_df_14,MI_df_13,MI_df_12,MI_df_11,MI_df_10,MI_df_09) #bind the 4 years together
 MI_df <- MI_df[,c(3,4,1,2)] #reorder columns
 MI_df$Over18 <- MI_df$TotalPop-MI_df$Under18 # compute pop over 18
 MI_df$County <- as.factor(MI_df$County)
 
 # Clean up our messy environs
-rm(MI_df_14);rm(MI_df_13);rm(MI_df_12);rm(MI_df_11);rm(MI_df_10);rm(MI_df_09)
-rm(MI_2014);rm(MI_2013);rm(MI_2012);rm(MI_2011);rm(MI_2010);rm(MI_2009)
+rm(MI_df_15);rm(MI_df_14);rm(MI_df_13);rm(MI_df_12);rm(MI_df_11);rm(MI_df_10);rm(MI_df_09)
+rm(MI_2015);rm(MI_2014);rm(MI_2013);rm(MI_2012);rm(MI_2011);rm(MI_2010);rm(MI_2009)
 rm(lookup_MI);rm(MIbyCounty);rm(MIcounties)
 
-MI_df <- MI_df[,c(1,7,8,6,2:5)] #reorder columns
+# MI_df <- MI_df[,c(1,7,8,6,2:5)] #reorder columns
 
 pop_yr <-
 MI_df %>%
@@ -166,148 +176,63 @@ MI_df %>%
 
 drug_death %<>%
   left_join(pop_yr, by = "key") %>%
-  mutate(CMHSP = recode(county, "'Alcona'='Northeast Michigan';
-                                'Alger'='Pathways';
-                        'Allegan'='Allegan';       
-                        'Alpena'='Northeast Michigan';       
-                        'Antrim'='North Country';       
-                        'Arenac'='Bay-Arenac';        
-                        'Baraga'='Copper Country';         
-                        'Barry'='Barry';     
-                        'Bay'='Bay-Arenac';         
-                        'Benzie'='Manistee-Benzie';        
-                        'Berrien'='Berrien';      
-                        'Branch'='Pines'; 
-                        'Calhoun'='Summit Pointe';    
-                        'Cass'='Woodlands';
-                        'Charlevoix'='North Country';   
-                        'Cheboygan'='North Country';   
-                        'Chippewa'= 'Hiawatha';       
-                        'Clare'='Central Michigan';     
-                        'Clinton'='CEI';       
-                        'Crawford'='Northern Lakes';   
-                        'Delta'='Pathways';      
-                        'Dickinson'='Northpointe';    
-                        'Eaton'='CEI';      
-                        'Emmet'='North Country';
-                        'Genesee'='Genesee';       
-                        'Gladwin'='Central Michigan';    
-                        'Gogebic'='Gogebic';    
-                        'Grand Traverse'='Northern Lakes';
-                        'Gratiot'='Gratiot';
-                        'Hillsdale'='Lifeways';    
-                        'Houghton'='Copper Country';      
-                        'Huron'='Huron';
-                        'Ingham'='CEI';        
-                        'Ionia'='Ionia';    
-                        'Iosco'='AuSable Valley';        
-                        'Iron'='Northpointe';  
-                        'Isabella'='Central Michigan';  
-                        'Jackson'='Lifeways';    
-                        'Kalamazoo'='Kalamazoo';  
-                        'Kalkaska'='North Country'; 
-                        'Kent'='Network180';
-                        'Keweenaw'='Copper Country';       
-                        'Lake'='West Michigan';
-                        'Lapeer'='Lapeer';     
-                        'Leelanau'='Northern Lakes';  
-                        'Lenawee'='Lenawee';    
-                        'Livingston'='Livingston';   
-                        'Luce'='Pathways';
-                        'Mackinac'='Hiawatha';       
-                        'Macomb'='Macomb';
-                        'Manistee'='Manistee-Benzie';     
-                        'Marquette'='Pathways';   
-                        'Mason'='West Michigan';
-                        'Mecosta'='Central Michigan';     
-                        'Menominee'='Northpointe';     
-                        'Midland'='Central Michigan';
-                        'Missaukee'='Northern Lakes';     
-                        'Monroe'='Monroe';
-                        'Montcalm'='Montcalm';
-                        'Montmorency'='Northeast Michigan';
-                        'Muskegon'='Muskegon';    
-                        'Newaygo'='Newaygo'; 
-                        'Oakland'='Oakland';    
-                        'Oceana'='West Michigan';   
-                        'Ogemaw'='AuSable Valley';      
-                        'Ontonagon'='Copper Country';
-                        'Osceola'='Central Michigan';       
-                        'Oscoda'='AuSable Valley';      
-                        'Otsego'='North Country';         
-                        'Ottawa'='Ottawa';       
-                        'Presque Isle'='Northeast Michigan';   
-                        'Roscommon'='Northern Lakes';  
-                        'Saginaw'='Saginaw';     
-                        'Sanilac'='Sanilac';      
-                        'Schoolcraft'='Hiawatha';  
-                        'Shiawassee'='Shiawassee';   
-                        'St. Clair'='St. Clair'; 
-                        'St. Joseph'='St. Joseph';  
-                        'Tuscola'='Tuscola';
-                        'Van Buren'='Van Buren';   
-                        'Washtenaw'='Washtenaw';      
-                        'Wayne'='Detroit-Wayne';     
-                        'Wexford'='Northern Lakes'"))
+  mutate(
+    CMHSP = dplyr::recode(
+      county, 
+      `Alcona` = 'Northeast Michigan',`Alger`='Pathways',`Allegan`='Allegan',
+      `Alpena`='Northeast Michigan',`Antrim`='North Country',
+      `Arenac`='Bay-Arenac',`Baraga`='Copper Country',`Barry`='Barry',
+      `Bay`='Bay-Arenac',`Benzie`='Manistee-Benzie',`Berrien`='Berrien',
+      `Branch`='Pines',`Calhoun`='Summit Pointe',`Cass`='Woodlands',
+      `Charlevoix`='North Country',`Cheboygan`='North Country',
+      `Chippewa`= 'Hiawatha',`Clare`='Central Michigan',`Clinton`='CEI',
+      `Crawford`='Northern Lakes',`Delta`='Pathways',`Dickinson`='Northpointe',
+      `Eaton`='CEI',`Emmet`='North Country',`Genesee`='Genesee',
+      `Gladwin`='Central Michigan',`Gogebic`='Gogebic',
+      `Grand Traverse`='Northern Lakes',`Gratiot`='Gratiot',
+      `Hillsdale`='Lifeways',`Houghton`='Copper Country',`Huron`='Huron',
+      `Ingham`='CEI',`Ionia`='Ionia',`Iosco`='AuSable Valley',
+      `Iron`='Northpointe',`Isabella`='Central Michigan',`Jackson`='Lifeways',
+      `Kalamazoo`='Kalamazoo',`Kalkaska`='North Country',`Kent`='Network180',
+      `Keweenaw`='Copper Country',`Lake`='West Michigan',`Lapeer`='Lapeer',
+      `Leelanau`='Northern Lakes',`Lenawee`='Lenawee',`Livingston`='Livingston',
+      `Luce`='Pathways',`Mackinac`='Hiawatha',`Macomb`='Macomb',
+      `Manistee`='Manistee-Benzie',`Marquette`='Pathways',
+      `Mason`='West Michigan',`Mecosta`='Central Michigan',
+      `Menominee`='Northpointe',`Midland`='Central Michigan',
+      `Missaukee`='Northern Lakes',`Monroe`='Monroe',`Montcalm`='Montcalm',
+      `Montmorency`='Northeast Michigan',`Muskegon`='Muskegon',`Newaygo`='Newaygo', 
+      `Oakland`='Oakland',`Oceana`='West Michigan',`Ogemaw`='AuSable Valley',
+      `Ontonagon`='Copper Country',`Osceola`='Central Michigan',
+      `Oscoda`='AuSable Valley',`Otsego`='North Country',`Ottawa`='Ottawa',
+      `Presque Isle`='Northeast Michigan',`Roscommon`='Northern Lakes', 
+      `Saginaw`='Saginaw',`Sanilac`='Sanilac',`Schoolcraft`='Hiawatha', 
+      `Shiawassee`='Shiawassee',`St. Clair`='St. Clair',`St. Joseph`='St. Joseph',  
+      `Tuscola`='Tuscola',`Van Buren`='Van Buren',`Washtenaw`='Washtenaw',
+      `Wayne`='Detroit-Wayne',`Wexford`='Northern Lakes'
+    ),
+    PIHP = dplyr::recode(
+      CMHSP, 
+      `Copper Country`=1,`Network180`=3,`Gogebic`=1,`Hiawatha`=1,`Northpointe`=1, 
+      `Pathways`=1,`AuSable Valley`=2,`Manistee-Benzie`=2,`North Country`=2,
+      `Northeast Michigan`=2,`Northern Lakes`=2,`Allegan`=3,`Muskegon`=3,
+      `Network180`=3,`Ottawa`=3,`West Michigan`=3,`Barry`=4,`Berrien`=4,
+      `Kalamazoo`=4,`Pines`=4,`St. Joseph`=4,`Summit Pointe`=4,`Van Buren`=4,
+      `Woodlands`=4,`Bay-Arenac`=5,`CEI`=5,`Central Michigan`=5,`Gratiot`=5,
+      `Huron`=5,`Ionia`=5,`Lifeways`=5,`Montcalm`=5,`Newaygo`=5,`Saginaw`=5,
+      `Shiawassee`=5,`Tuscola`=5,`Lenawee`=6,`Livingston`=6,`Monroe`=6,
+      `Washtenaw`=6,`Detroit-Wayne`=7,`Oakland`=8,`Macomb`=9,`Genesee`=10,
+      `Lapeer`=10,`Sanilac`=10,`St. Clair`=10
+    ),
+    PIHPname = dplyr::recode(
+      as.character(PIHP), 
+      `1`='Northcare',`2`='NMRE',`3`='LRE',`4`='SWMBH',`5`='MSHN', `6`='CMHPSM',
+      `7`='DWMHA',`8`='OCCMHA',`9`='MCMHS',`10`='Region10'
+    )
+  )
 
-drug_death$PIHP <- recode(drug_death$CMHSP, "'Copper Country'='1';
-                       'Network180'='3'; 
-                       'Gogebic'='1';
-                       'Hiawatha'='1';
-                       'Northpointe'='1'; 
-                       'Pathways'='1';
-                       'AuSable Valley'='2';
-                       'Manistee-Benzie'='2';
-                       'North Country'='2';
-                       'Northeast Michigan'='2';
-                       'Northern Lakes'='2';
-                       'Allegan'='3';
-                       'Muskegon'='3';
-                       'Network180'='3';
-                       'Ottawa'='3';
-                       'West Michigan'='3';
-                       'Barry'='4';
-                       'Berrien'='4';
-                       'Kalamazoo'='4';
-                       'Pines'='4';
-                       'St. Joseph'='4';
-                       'Summit Pointe'='4';
-                       'Van Buren'='4';
-                       'Woodlands'='4';
-                       'Bay-Arenac'='5';
-                       'CEI'='5';
-                       'Central Michigan'='5';
-                       'Gratiot'='5';
-                       'Huron'='5';
-                       'Ionia'='5';
-                       'Lifeways'='5';
-                       'Montcalm'='5';
-                       'Newaygo'='5';
-                       'Saginaw'='5';
-                       'Shiawassee'='5';
-                       'Tuscola'='5';
-                       'Lenawee'='6';
-                       'Livingston'='6';
-                       'Monroe'='6';
-                       'Washtenaw'='6';
-                       'Detroit-Wayne'='7';
-                       'Oakland'='8';
-                       'Macomb'='9';
-                       'Genesee'='10';
-                       'Lapeer'='10';
-                       'Sanilac'='10';
-                       'St. Clair'='10'")
 
-drug_death$PIHPname <- recode(drug_death$PIHP, "'1'='Northcare';
-                           '2'='NMRE';
-                           '3'='LRE';
-                           '4'='SWMBH';
-                           '5'='MSHN'; 
-                           '6'='CMHPSM';
-                           '7'='DWMHA';
-                           '8'='OCCMHA';
-                           '9'='MCMHS';
-                           '10'='Region10'")
+detach("package:plyr", unload=TRUE)
 
 # Remove
 rm(pop_yr); rm(MI_df); rm(byCMHSP)
@@ -316,7 +241,7 @@ drug_death %<>%
   ungroup() %>% droplevels() %>%
   group_by(year,cause) %>%
   mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1),
-         pct_deaths = round(deaths/sum(deaths)*100, digits = 1)) %>%
+         pct_deaths = round(deaths/sum(deaths,na.rm=T)*100, digits = 1)) %>%
   select(PIHPname,CMHSP,county,year,cause,
          deaths,pct_deaths,deaths_per_100k,TotalPop) %>%
   ungroup() %>% droplevels()
