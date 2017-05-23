@@ -2,7 +2,6 @@
 library(shiny)
 library(shinydashboard)
 library(shinythemes)
-library(dplyr)
 library(magrittr)
 library(tidyr)
 library(xts)
@@ -14,7 +13,8 @@ library(plotly)
 library(ggplot2)
 library(dygraphs)
 library(RColorBrewer)
-
+library(dplyr)
+#library(tidyverse)
 
 # Get data
 
@@ -24,5 +24,5 @@ drug_death <- read.csv("data/drug_death.csv")
 totals <-
 drug_death %>%
   group_by(PIHPname,CMHSP,county,year) %>%
-  summarize(TotalPop = max(TotalPop, na.rm = T)) %>%
+  dplyr::summarize(TotalPop = max(TotalPop, na.rm = T)) %>%
   ungroup() 
