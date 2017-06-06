@@ -1,6 +1,6 @@
 ## deploy.R ##
 
-library(shinyapps)
+library(rsconnect)
 
 deployApp("misuddr-app", account = "joshh")
 deployApp("misuddr-app", account = "tbdsolutions")

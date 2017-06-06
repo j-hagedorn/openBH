@@ -37,7 +37,7 @@ shinyServer(function(input, output) {
         left_join(totals_cty, by = "key") %>%
         group_by(year,cause) %>%
         mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1),
-               pct_deaths = round(deaths/sum(deaths)*100, digits = 1)) %>%
+               pct_deaths = round(deaths/sum(deaths,na.rm=T)*100, digits = 1)) %>%
         rename(group = county)
       
     } else if (input$group == "CMHSP") {
@@ -126,26 +126,28 @@ shinyServer(function(input, output) {
       summarize(deaths = sum(deaths, na.rm = T),
                 TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
       ungroup() %>% droplevels() %>%
-      mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
+      mutate(
+        deaths_per_100k = round(deaths/TotalPop*100000, digits = 1),
+        group = fct_reorder(group, desc(deaths_per_100k))
+      ) %>%
       ungroup() %>% droplevels() %>%
       arrange(desc(deaths_per_100k)) %>%
       mutate(avg_rate = round(sum(deaths, na.rm = T)/sum(TotalPop, na.rm = T)*100000,
                               digits = 1)) %>%
-      plot_ly(x = group, y = deaths_per_100k, type = "bar",
+      plot_ly(x = ~group, y = ~deaths_per_100k, type = "bar",
               marker = list(color = "#CD5C5C"),
               name = "Rate per 100k") %>%
-      add_trace(x = group, 
-                y = rep(avg_rate, each = nlevels(as.factor(group))), 
-                type = "line",
-                line = list(dash = 5),
+      add_trace(x = ~group, 
+                y = ~avg_rate, 
+                type = "scatter", mode = "lines",
+                line = list(dash = 5, color = "#555555"),
                 marker = list(color = "#555555"),
                 name = "Average Rate", 
                 yaxis = "y") %>%
       layout(title = paste0("Rate of ",input$cause),
-             xaxis = list(title = input$group, showticklabels = F,
-                          categoryarray = group, categoryorder = "array"),
+             xaxis = list(title = input$group, showticklabels = F),
              yaxis = list(title = "Deaths per 100,000 population",
-                          range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
+                          range = c(0, ~max(deaths_per_100k,na.rm=F)*1.1)),
              legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
                            font = list(size = 10)))
     
@@ -231,25 +233,28 @@ shinyServer(function(input, output) {
       group_by(group,cause) %>%
       summarize(deaths = sum(deaths, na.rm = T)) %>%
       ungroup() %>% droplevels() %>%
-      mutate(pct_deaths = round(deaths/sum(deaths)*100, digits = 1)) %>%
-      ungroup() %>% droplevels() %>%
+      mutate(
+        pct_deaths = round(deaths/sum(deaths)*100, digits = 1),
+        group = fct_reorder(group, desc(deaths))
+      ) %>%
       arrange(desc(deaths)) %>%
       mutate(cum_pct = cumsum(pct_deaths)) %>%
-      plot_ly(x = group, y = deaths, type = "bar", 
+      plot_ly(x = ~group, y = ~deaths, type = "bar", 
               marker = list(color = "#555555"),
               name = "Count") %>%
-      add_trace(x = group, y = cum_pct, type = "line",
+      add_trace(x = ~group, y = ~cum_pct, 
+                type = "scatter", mode = 'lines',
+                line = list(color = "#CD5555"),
                 marker = list(color = "#CD5555"),
                 name = "Cumulative %", 
                 yaxis = "y2") %>%
       layout(title = paste0("Frequency of ",input$cause),
-             xaxis = list(title = input$group, showticklabels = F,
-                          categoryarray = group, categoryorder = "array"),
-             yaxis = list(title = "Number of deaths",
-                          range = c(0, max(deaths)*1.1)),
+             xaxis = list(title = "", showticklabels = F),
+             yaxis = list(side = 'left', title = "Number of deaths",
+                          range = c(0, ~max(deaths)*1.1)),
              yaxis2 = list(overlaying = "y", side = "right",
                            ticksuffix = "%", showticklabels = F,
-                           range = c(0, max(cum_pct)*1.1)),
+                           range = c(0, ~max(cum_pct)*1.1)),
              legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
                            font = list(size = 10)))
     
@@ -340,22 +345,22 @@ shinyServer(function(input, output) {
                pct_chg = round((deaths-lag(deaths))/lag(deaths)*100, 
                                digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        mutate(cause = recode(cause,
-                              "'opioid' = 'Opioids';
-                              'heroin' = 'Heroin';
-                              'alldrug' = 'Any drug'")) %>%
-        plot_ly(x = year, y = deaths_per_100k, color = cause,
+        mutate(cause = dplyr::recode(cause,
+                              `opioid` = 'Opioids',
+                              `heroin` = 'Heroin',
+                              `alldrug` = 'Any drug')) %>%
+        plot_ly(x = ~year, y = ~deaths_per_100k, color = ~cause,
                 name = "Rate per 100k", 
-                text = paste("Number of deaths: ", deaths,
+                text = ~paste("Number of deaths: ", deaths,
                              "<br>Total population: ", TotalPop),
                 line = list(shape = "spline")) %>%
         layout(title = paste0("Trend of overdose deaths by cause"),
                xaxis = list(title = "Year"),
                yaxis = list(title = "Deaths per 100,000 population",
-                            range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
+                            range = c(0, ~max(deaths_per_100k,na.rm=F)*1.1)),
                legend = list(font = list(size = 10)),
                annotations = list(
-                 list(x = min(year), xanchor = "left", 
+                 list(x = ~min(year), xanchor = "left", 
                       y = 1, yanchor = "top", yref = "paper",
                       showarrow = F, align = "left",
                       text = notetxt)))
@@ -383,22 +388,22 @@ shinyServer(function(input, output) {
         mutate(pct_chg = round((deaths-lag(deaths))/ifelse(lag(deaths)==0,1,lag(deaths))*100, 
                                digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        mutate(cause = recode(cause,
-                              "'opioid' = 'Opioids';
-                              'heroin' = 'Heroin';
-                              'alldrug' = 'Any drug'")) %>%
-        plot_ly(x = year, y = pct_chg, color = cause,
+        mutate(cause = dplyr::recode(cause,
+                              `opioid` = 'Opioids',
+                              `heroin` = 'Heroin',
+                              `alldrug` = 'Any drug')) %>%
+        plot_ly(x = ~year, y = ~pct_chg, color = ~cause,
                 name = "Rate per 100k", 
-                text = paste("# deaths: ", deaths,
+                text = ~paste("# deaths: ", deaths,
                              "<br># deaths (prev yr): ", lag(deaths)),
                 line = list(shape = "spline")) %>%
         layout(title = paste0("Trend of overdose deaths by cause"),
                xaxis = list(title = "Year"),
                yaxis = list(title = "Percent change since prior year",
-                            range = c(0, max(pct_chg,na.rm=F)*1.1)),
+                            range = c(0, ~max(pct_chg,na.rm=F)*1.1)),
                legend = list(font = list(size = 10)),
                annotations = list(
-                 list(x = min(year), xanchor = "left", 
+                 list(x = ~min(year), xanchor = "left", 
                       y = 1, yanchor = "top", yref = "paper",
                       showarrow = F, align = "left",
                       text = notetxt)))
@@ -436,18 +441,17 @@ shinyServer(function(input, output) {
         ungroup() %>% droplevels() %>%
         mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        plot_ly(x = year, y = deaths_per_100k, color = group,
-                name = "Rate per 100k",
-                text = paste("Number of deaths: ", deaths,
+        plot_ly(x = ~year, y = ~deaths_per_100k, color = ~group,
+                text = ~paste("Number of deaths: ", deaths,
                              "<br>Total population: ", TotalPop),
                 line = list(shape = "spline")) %>%
         layout(title = paste0("Trend of ",input$cause_line," by ",input$group),
                xaxis = list(title = "Year"),
                yaxis = list(title = "Deaths per 100,000 population",
-                            range = c(0, max(deaths_per_100k,na.rm=F)*1.1)),
+                            range = c(0, ~max(deaths_per_100k,na.rm=F)*1.1)),
                legend = list(font = list(size = 10)),
                annotations = list(
-                 list(x = min(year), xanchor = "left", 
+                 list(x = ~min(year), xanchor = "left", 
                       y = 1, yanchor = "top", yref = "paper",
                       showarrow = F, align = "left",
                       text = notetxt)))
@@ -476,18 +480,17 @@ shinyServer(function(input, output) {
         mutate(pct_chg = round((deaths-lag(deaths))/ifelse(lag(deaths)==0,1,lag(deaths))*100, 
                                digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        plot_ly(x = year, y = pct_chg, color = group,
-                name = "Percent change since prior year",
-                text = paste("# of deaths: ", deaths,
+        plot_ly(x = ~year, y = ~pct_chg, color = ~group,
+                text = ~paste("# of deaths: ", deaths,
                              "<br># deaths (prev yr): ", lag(deaths)),
                 line = list(shape = "spline")) %>%
         layout(title = paste0("Trend of ",input$cause_line," by ",input$group),
                xaxis = list(title = "Year"),
                yaxis = list(title = "Percent change since prior year",
-                            range = c(0, max(pct_chg,na.rm=F)*1.1)),
+                            range = c(0, ~max(pct_chg,na.rm=F)*1.1)),
                legend = list(font = list(size = 10)),
                annotations = list(
-                 list(x = min(year), xanchor = "left", 
+                 list(x = ~min(year), xanchor = "left", 
                       y = 1, yanchor = "top", yref = "paper",
                       showarrow = F, align = "left",
                       text = notetxt)))
