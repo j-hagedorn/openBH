@@ -1,6 +1,6 @@
 ## deploy.R ##
 
-library(shinyapps)
+library(rsconnect)
 
 deployApp("misuddr-app", account = "joshh")
 deployApp("misuddr-app", account = "tbdsolutions")
@@ -13,4 +13,4 @@ accountInfo("tbdsolutions")
 
 applications("tbdsolutions")
 applications("joshh")
-# terminateApp("exec-dash", account = "joshh", quiet = FALSE)
+# terminateApp("exploreSIS_node_lrp", account = "joshh", quiet = FALSE)
