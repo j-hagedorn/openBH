@@ -1,7 +1,8 @@
 name: misuddr-app
+title:
 account: tbdsolutions
 server: shinyapps.io
 appId: 107348
-bundleId: 571297
+bundleId: 840965
 url: https://tbdsolutions.shinyapps.io/misuddr-app/
-when: 1475089027.40627
+when: 1495742848.37965
