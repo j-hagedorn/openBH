@@ -134,18 +134,18 @@ shinyServer(function(input, output) {
       arrange(desc(deaths_per_100k)) %>%
       mutate(avg_rate = round(sum(deaths, na.rm = T)/sum(TotalPop, na.rm = T)*100000,
                               digits = 1)) %>%
-      plot_ly(x = ~group, y = ~deaths_per_100k, type = "bar",
-              marker = list(color = "#CD5C5C"),
+      plot_ly(x = ~group, y = ~deaths_per_100k, 
               name = "Rate per 100k") %>%
+      add_bars(color = I("#CD5C5C")) %>%
       add_trace(x = ~group, 
                 y = ~avg_rate, 
                 type = "scatter", mode = "lines",
                 line = list(dash = 5, color = "#555555"),
-                marker = list(color = "#555555"),
                 name = "Average Rate", 
                 yaxis = "y") %>%
       layout(title = paste0("Rate of ",input$cause),
-             xaxis = list(title = input$group, showticklabels = F),
+             margin = list(b = 100,r = 50),
+             xaxis = list(title = "", tickangle = 45),
              yaxis = list(title = "Deaths per 100,000 population",
                           range = c(0, ~max(deaths_per_100k,na.rm=F)*1.1)),
              legend = list(xanchor = "right", yanchor = "top", x = 1, y = 1, 
@@ -239,9 +239,9 @@ shinyServer(function(input, output) {
       ) %>%
       arrange(desc(deaths)) %>%
       mutate(cum_pct = cumsum(pct_deaths)) %>%
-      plot_ly(x = ~group, y = ~deaths, type = "bar", 
-              marker = list(color = "#555555"),
+      plot_ly(x = ~group, y = ~deaths, 
               name = "Count") %>%
+      add_bars(color = I("#555555")) %>%
       add_trace(x = ~group, y = ~cum_pct, 
                 type = "scatter", mode = 'lines',
                 line = list(color = "#CD5555"),
@@ -249,7 +249,8 @@ shinyServer(function(input, output) {
                 name = "Cumulative %", 
                 yaxis = "y2") %>%
       layout(title = paste0("Frequency of ",input$cause),
-             xaxis = list(title = "", showticklabels = F),
+             margin = list(b = 100,r = 50),
+             xaxis = list(title = "", tickangle = 45),
              yaxis = list(side = 'left', title = "Number of deaths",
                           range = c(0, ~max(deaths)*1.1)),
              yaxis2 = list(overlaying = "y", side = "right",
