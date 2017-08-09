@@ -1,0 +1,179 @@
+---
+title: "Measurement Portfolio"
+author: "Shared MHP/PIHP Population"
+output:
+  html_document: 
+    toc: true
+    toc_depth: 2
+    theme: cosmo 
+    highlight: tango 
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+source("readQPS.R")
+```
+
+## Context
+In order to support a shared obligation for quality services to vulnerable populations under the requirements of the 2015 RFP for Medicaid Health Plans, [Mid State Health Network](http://www.midstatehealthnetwork.org/) (MSHN) is proposing a portfolio approach to performance measurement. MHPs are required to "collaborate with PIHPs and MDHHS to develop shared metrics to measure the quality of care provided to enrollees jointly served by the Contractor and PIHPs." [^1]
+
+The RFP requires "integrating both physical health and behavioral health services... to effectively address enrollee needs and improve health status" which means both integrating processes and addressing major comorbidities.
+
+Quality measures are already being used in multiple federal initiatives which are relevant to MHPs, PIHPs and their provider networks.  These include:
+
+* [Healthcare Effectiveness Data and Information Set (HEDIS)](http://www.ncqa.org/HEDISQualityMeasurement/HEDISMeasures.aspx)
+* [Physician Quality Reporting System](http://www.thenationalcouncil.org/wp-content/uploads/2012/12/A-Place-at-the-Table-FINAL.pdf)
+* [Medicaid Core Measure Set (Adult and Child)](http://www.medicaid.gov/federal-policy-guidance/downloads/cib-12-30-2014.pdf)
+* [Certified Community Behavioral Health Clinics (CCBHCs)](http://www.samhsa.gov/sites/default/files/grants/pdf/sm-16-001_0.pdf) (see Appendix 3, pg. 9)
+* [Inpatient Psychiatric Facilities Prospective Payment System](https://www.federalregister.gov/articles/2015/08/05/2015-18903/medicare-program-inpatient-psychiatric-facilities-prospective-payment-system-update-for-fiscal-year)
+* [Readmission Reductions Program](https://www.cms.gov/medicare/medicare-fee-for-service-payment/acuteinpatientpps/readmissions-reduction-program.html)
+* [Meaningful Use Stage 2 (MUS2)](http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Stage_2.html) Core measures for Eligible Professionals 
+* National Quality Forum’s [Behavioral Health measure set](http://www.qualityforum.org/ProjectMeasures.aspx?projectID=74022) 
+* NQF’s [Measure Applications Partnership (MAP)](http://www.qualityforum.org/map/) measures, slated for alignment across federal programs and priority areas
+
+Measures drawn from these sets form an initial standard for integrated behavioral healthcare.  Selecting measures that are both relevant and widely used by federal programs will provide a common language for comparison of performance.
+
+## Focusing Our Options
+This proposed portfolio was developed through a comprehensive review[^2] of existing standards[^3].  For inclusion, a measure had to meet the following criteria:
+
+* Use in one or more of the federal initiatives or measure sets listed above
+* Addresses behavioral health, substance use or common comorbid physical conditions[^4]
+
+The table below shows the initial subset of `r nrow(qps)` measures, as well as the number of federal programs in which the measures are currently used:
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(DT)
+qps %>%
+  filter(n_prog > 0) %>%
+  select(nqf_id,measure,n_prog) %>%
+  arrange(desc(n_prog)) %>%
+  datatable(rownames = FALSE,
+            colnames = c('NQF #','Measure Name', '# Federal Programs'),
+            options = list(pageLength = 5, lengthMenu = c(5, 10, 25, 50))) %>%
+  formatStyle(
+    'n_prog',
+    background = styleColorBar(qps$n_prog, 'steelblue'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  ) 
+
+```
+
+*To see exactly which federal programs the measures are used in, see the footnote here for a table which can be filtered and sorted:*[^5]
+
+To arrive at our proposed portfolio, we added another set of criteria as well.  Measures in the final portfolio were included if they met the following criteria in addition to those listed above:
+
+* Populated using administrative claims data[^6]
+* Used in 2 or more federal programs
+* Currently endorsed by NQF
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+portfolio <-
+qps %>%
+  filter(claims == T
+         & n_prog >= 2
+         & endorsed == "Endorsed")
+```
+
+
+## Balancing Your Portfolio
+In order to develop a comprehensive approach to performance, we need define our blindspots. Just as a balanced financial portfolio spreads ones financial risk, a balanced measurement portfolio helps assure comprehensive quality for shared members of the PIHP and its partner MHPs.
+
+Using the above criteria narrows our focus to `r nrow(portfolio)` measures, which are proposed as a final portfolio for consideration.  Since you may not want to select all of these for initial implementation, we've provided the ability to filter these to help in your selection. 
+
+The [Triple Aim](http://www.ihi.org/Engage/Initiatives/TripleAim/Pages/default.aspx) can serve as a guiding framework for defining quality[^7].  The table below shows each of the measures and their corresponding Triple Aim domain and quality type.  It can also help you to select measures that are relevant to the primary conditions of shared populations: behavioral health, substance use and common comorbidities.
+
+### Select Your Portfolio
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(DT)
+portfolio %>%
+  select(nqf_id, measure, aim,type,
+         BH,SUD,comorbid,n_prog) %>%
+  arrange(desc(n_prog)) %>%
+  datatable(rownames = FALSE, filter = 'top',
+            colnames = c('NQF #','Measure Name', 'Aim','Measure Type',
+                         'BH Condition','SUD','Comorbidity','# Federal Programs'),
+            extensions = 'ColVis', 
+            options = list(dom = 'C<"clear">lfrtip',
+                           pageLength = 5, lengthMenu = c(5, 10, 25, 50),
+                           pageLength = nrow(portfolio),
+                           colVis = list(exclude = c(0), 
+                                         activate = 'mouseover'))
+            ) %>%
+  formatStyle('aim',
+    color = styleEqual(unique(portfolio$aim), c("#00A08A", "#F98400")),
+    fontWeight = 'bold'
+    ) %>%
+  formatStyle('type',
+    color = styleEqual(unique(portfolio$type), c("#74A089","#C27D38")),
+    fontWeight = 'bold'
+    ) %>%
+  formatStyle('n_prog',
+    background = styleColorBar(portfolio$n_prog, 'steelblue'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+    )
+```
+
+---
+
+##  Gaps in Proposed Measures
+There are clear gaps in the measure set outlined in this proposal, which include the following: 
+
+*	Measures related to people with Developmental Disabilities
+*	Functional Outcome Measures
+*	Person and Family Centered Care Measures
+*	Safety Measures 
+*	Cost and Resource Measures
+
+These gaps are common among existing measurements, and are the focus of several national initiatives.  Standard measures exist in some of these areas, but most have not yet been included in incentive programs such as the ones referenced above.  These gaps will need to be addressed, both through adoption of existing measures and/or development of new measures using standard formats.
+
+
+## Other Considerations
+
+__Home and Community Based Services.__  Since the majority of service cost across the public behavioral health system is related to Home and Community Based Services (HCBS) and the recent HCBS Final Rule is currently being addressed by the Michigan Department of Health and Human Services (MDHHS), it is critical that quality staff at MSHN track the development of the [National Quality Forum’s contract with HHS](http://www.qualityforum.org/ProjectDescription.aspx?projectID=77692) to address measure gaps related to HCBS.
+
+__Competing Requirements.__  In some domains, there are conflicting requirements or duplicative measures.  For instance, the National Core Indicators (NCI) used by MDHHS for individuals with developmental disabilities includes many similar items to the CAHPS surveys used in HEDIS measures.  Using both of these tools may impose an undue response burden and create confusion related to performance definitions.
+
+__Electronic Measures.__  Electronic measures have specifications written to allow for electronic calculation of quality measures, unlike legacy paper measures.  Adopting these will often require less effort in translation of measures into electronic format. 
+
+---
+
+THOUGHTS & VISUALS BY [<img src="C:\Users\Josh\Desktop\Logos\tbdSolutions-logo-small.png" height="50px" width="200px" />](http://www.tbdsolutions.com/)
+
+---
+
+## References
+
+[^1]: See *Request For Proposal No. 007115B0005022: Comprehensive Health Care Program for the Michigan Department of Health and Human Services, Section III.B Payment Reform: Behavioral Health Integration* p. 6.
+[^2]: Existing measurement standards were evaluated based on the following criteria:
+__Standardized measure__ Is the measure a national standard, endorsed by NQF and used in one or more federal initiatives related to the public behavioral health care system? __Built with existing data__ Can the measure be populated at least partially using available claims data?  __Can be changed__ Are there clear steps which can be taken to improve performance on the measure, and which can be used to inform the development of alerts and other decision support within the platform? __Cross-functional__ Can the measure be used to evaluate performance related to multiple functional areas of the health plan (e.g. different clinical teams, different populations)?
+[^3]: A complete set of measures and related classification metadata were extracted from the National Quality Forum's [Quality Positioning System^TM^](http://www.qualityforum.org/QPS/) and the Centers for Medicare and Medicaid Services' (CMS) [Measures Inventory](http://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/QualityMeasures/CMS-Measures-Inventory.html) and merged to ensure comprehensive scope of review.
+[^4]: Behavioral health issues include any tagged as mental or behavioral conditions.  Substance use measures include any related to tobacco, alcohol, or substance use.  Common comorbid conditions were limited to cardiovascular disease, diabetes, obesity or readmissions.
+[^5]: The table below shows which programs the measures are used in:
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(DT)
+qps %>%
+  select(nqf_id,measure,HEDIS,PQRS,caida,caidc,ccbhc,
+         readmit,ip_psy,MUS2,nqfbh,map15,n_prog) %>%
+  arrange(desc(n_prog)) %>%
+  datatable(rownames = FALSE,
+            filter = 'top',
+            colnames = c('NQF #','Measure Name', 'HEDIS','PQRS',
+                         'Medicaid (Adult)','Medicaid (Kids)',
+                         'CCBHC','Readmissions','Inpatient Psych',
+                         'MUS2','NQF BH','MAP','# Federal Programs'),
+            extensions = 'Responsive',
+            options = list(pageLength = 1, lengthMenu = c(1, 10, 25, 50))) %>%
+  formatStyle(
+    'n_prog',
+    background = styleColorBar(qps$n_prog, 'steelblue'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  ) 
+```
+[^6]: Administrative claims are the primary source for these measures but some require additional data as well.  NQF 0575, for instance, requires HbA1c data in additional to claims data regarding physician visits.
+[^7]: The Triple Aim aligns well with multiple national objectives (for example, HHS [National Quality Strategy](http://www.ahrq.gov/workingforquality/about.htm) and SAMHSA's [National Behavioral Health Quality Framework](http://www.samhsa.gov/data/national-behavioral-health-quality-framework) ) and serves as a simple set of guidelines to orient organizational activity.
