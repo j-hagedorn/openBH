@@ -1,6 +1,6 @@
 ## readCrisis.R
 library(tidyverse); library(readxl); library(ggmap); library(leaflet)
-library(htmltools)
+library(htmltools); library(magrittr)
 
 
 #### Get data from sheets ####
@@ -56,12 +56,12 @@ crisis_address <-
 
 crisis_coords <- geocode(crisis_address$Location)
 
-tst <- crisis_address %>% bind_cols(crisis_coords)
+crisis_address %<>% bind_cols(crisis_coords)
 
-factpal <- colorFactor("viridis", unique(tst$type))
+factpal <- colorFactor("viridis", unique(crisis_address$type))
 
 crisis_map <-
-tst %>%
+  crisis_address %>%
   filter(is.na(lon) == F) %>%
   leaflet() %>% 
   addProviderTiles(providers$Stamen.Toner) %>%
@@ -85,4 +85,4 @@ tst %>%
   )
 
 library(htmlwidgets)
-saveWidget(crisis_map, file="crisis_map.html")
+saveWidget(crisis_map, file = "crisis_map.html")
