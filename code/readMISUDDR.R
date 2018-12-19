@@ -142,7 +142,7 @@ drug_death %<>%
   )
 
 # Remove
-rm(pop_yr); rm(x); rm(df)
+rm(pop_yr); rm(x); rm(df); rm(i)
 
 drug_death %<>%
   ungroup() %>% droplevels() %>%
