@@ -132,7 +132,7 @@ dashboardPage(
               collapsed = T,
               width = NULL,
               p(
-                strong("Drug poisoning deaths"), " are defined as having ICD-10 
+                strong("All overdose deaths"), " are defined as having ICD-10 
                 underlying cause of death codes within the following ranges:",
                 tags$ul(
                   tags$li("X40-X44 (", em("unintentional"),")"),
@@ -143,8 +143,9 @@ dashboardPage(
               ),
               p(
                 strong("Heroin deaths"), 
-                " include those with ICD-10 related cause code T40.1. 
-                Heroin-related deaths include: ", 
+                " include cases which meet the 'All overdose' definition 
+                and which have at least one contributing case of death coded 
+                as ICD-10 T40.1. Heroin-related deaths include: ", 
                 tags$ul(
                   tags$li("Heroin without cocaine or opioid"),
                   tags$li("Heroin and cocaine without opioid")
@@ -152,19 +153,29 @@ dashboardPage(
               ),
               p(
                 strong("Opioid deaths"),
-                " include those with ICD-10 related code T40.2-T40.4.  
+                " include cases which meet the 'All overdose' definition 
+                and which have at least one contributing case of death coded 
+                as ICD-10 T40.0, T40.1, T40.2, T40.3, T40.4, or T40.6.  
                 Opioid-related deaths include:",
                 tags$ul(
-                  tags$li("Opioid without heroin or cocaine"),
-                  tags$li("Opioid with heroin, without cocaine"),
-                  tags$li("Opioid with cocaine, without heroin"),
-                  tags$li("Opioid with heroin and cocaine")
+                  tags$li("T40.0 (", em("opium "),")"),
+                  tags$li("T40.1 (", em("heroin "),")"),
+                  tags$li("T40.2 (", em("natural/semisynthetic opioids"),")"),
+                  tags$li("T40.3 (", em("methadone"),")"),
+                  tags$li("T40.4 (", em("synthetic opioids other than methadone"),")"),
+                  tags$li("T40.6 (", em("unspecified narcotics"),")")
                 ) 
               ),
               p(
                 strong("Synthetic opioid deaths"),
-                " Case meeting the all overdose definition and has at 
-                least one contributing case of death coded as T40.4"
+                " include cases which meet the 'All overdose' definition 
+                and which have at least one contributing case of death coded 
+                as ICD-10 T40.4"
+              ),
+              p(
+                "Note that some deaths involved more than one type of drug. These 
+                deaths were included in the counts (or rates) for each drug 
+                category. Therefore, categories are not mutually exclusive."
               ),
               p(
                 strong("Data source"),": ",
@@ -249,8 +260,10 @@ dashboardPage(
                       "to support increased accuracy.")
                   ),
                   p(
-                    "Currently, only years from 2009 onward are available for 
-                    download from the Census API."
+                    "Currently, only years from 2010-2016 are available for 
+                    download from the Census API.  2010 values are used for earlier years, 
+                    and 2016 values for later years.  Thus, counties with large changes in 
+                    population will show skewed rate vaues."
                   )
                 )
               ),
@@ -335,10 +348,13 @@ dashboardPage(
                   selectInput(
                     "cause_line",
                     label = "Select cause of death:",
-                    choices = c("Heroin overdose deaths",
-                                "Opioid overdose deaths",
-                                "All overdose deaths"), 
-                    selected = "Opioid overdoses"
+                    choices = c(
+                      "Heroin-related overdose",
+                      "Opioid-related overdose",
+                      "Synthetic opioid-related overdose",
+                      "All overdose"
+                    ), 
+                    selected = "All overdose"
                   ),
                   plotlyOutput("line_group")
                 )
