@@ -1,0 +1,22 @@
++++
+title = '2018 07 11 Public Police Data'
+date = 2018-07-11T22:53:40-04:00
+draft = true
+meta_img = "/images/image.jpg"
+tags = ["tags"]
+description = "Desc"
+hacker_news_id = ""
+lobsters_id = ""
++++
+
+```{r}
+library("RSocrata")
+
+baltimore_911 <- read.socrata(
+  url = "https://data.baltimorecity.gov/resource/m8g9-abgb.json",
+  app_token = Sys.getenv("socrata_token"),
+  email     = Sys.getenv("socrata_email"),
+  password  = Sys.getenv("socrata_pw")
+)
+```
+
