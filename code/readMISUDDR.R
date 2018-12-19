@@ -1,70 +1,35 @@
-# library(plyr)
-library(tidyverse); library(magrittr)
+library(tidyverse); library(magrittr); library(readxl)
 
 ## CLEAN & MERGE DATA
 
-opioid <- read.csv("data/misuddr/Opioid deaths 99-15.csv", nrows = 1428)
+df <- 
+  read_excel("data/misuddr/Overdose deaths by type of drug, 1999-2017.xlsx", col_names = F) %>%
+  select(-X__1) %>% t() %>% as_tibble() %>% select(V3:V88)
 
-heroin <- read.csv("data/misuddr/Heroin deaths 99-15.csv", nrows = 1428)
-
-alldrug <- read.csv("data/misuddr/Total deaths 99-15.csv", nrows = 1428)
-
-opioid %<>%
-  select(1:3) %>%
-  mutate(cty_yr = paste0(County.Name,"_",Year))
-
-heroin %<>%
-  select(1:3) %>%
-  mutate(cty_yr = paste0(County.Name,"_",Year)) %>%
-  select(-County.Name, -Year)
-
-alldrug %<>%
-  select(1:3) %>%
-  mutate(cty_yr = paste0(County.Name,"_",Year)) %>%
-  select(-County.Name, -Year)
+df[1,1] <- "year"; df[1,2] <- "cause"
+colnames(df) = df[1, ] # the first row will be the header
+df <- df[-1, ]   
 
 drug_death <-
-  opioid %>%
-  left_join(heroin, by = "cty_yr") %>%
-  left_join(alldrug, by = "cty_yr") %>%
-  select(
-    county = County.Name,
-    year = Year,
-    opioid = Opiod.Deaths,
-    heroin = Heroin.Deaths,
-    alldrug = Total.Poisoning
-  ) %>%
-  gather(cause, deaths, opioid:alldrug) %>%
-  mutate(
-    year = as.factor(year),
-    county = ifelse(county %in% c("Detroit","Wayne \nexecluding \nDetroit","Wayne execluding Detroit"),
-                    yes = "Wayne", no = as.character(county)),
-    county = dplyr::recode(county, 
-                    `Saint Clair` = 'St. Clair', 
-                    `Saint Joseph` = 'St. Joseph')
-  ) %>%
-  ungroup() %>% droplevels() %>%
+  df %>%
+  fill(year, .direction = "down") %>%
+  gather(key = "county", value = "deaths", -year, -cause) %>%
   select(county,year,cause,deaths) %>%
-  # group_by(county,year,cause) %>%
-  # summarize(deaths = sum(deaths,na.rm = T)) %>%
-  # ungroup() %>%
-  mutate(key = paste0(county,"_",year))
+  mutate(
+    key = paste0(county,"_",year),
+    deaths = as.numeric(deaths)
+  )
 
 ## Remove unnecessary df
-
-rm(opioid); rm(heroin); rm(alldrug)
+rm(df)
 
 ## MAP COUNTIES
 
-library(acs)
+library(tidycensus)
 
-# Install API key
-api.key.install(census_key, file = "key.rda") # hide key in local environment
+# Note: API key installed using tidycensus::census_api_key(..., install = T)
 
-# Define Michigan geography
-lookup_MI <- geo.lookup(state = "MI", county = "*")
-MIcounties <- as.vector(na.omit(lookup_MI$county))    #Get vector of counties from MI
-MIbyCounty <- geo.make(state="MI", county=MIcounties) #Define region for acs.fetch query
+acs_vars <- load_variables(2016,"acs5",cache = T)
 
 #####
 
@@ -74,108 +39,53 @@ MIbyCounty <- geo.make(state="MI", county=MIcounties) #Define region for acs.fet
 # Use previous year ACS estimates for most recent years 
 # if ACS data has not been published yet.
 
-MI_2015 <- acs.fetch(endyear = 2015, span = 5, geography=MIbyCounty,  
-                     variable = c('B01001_001','B09001_001'), col.names = "auto")
+df <- tibble()
 
-MI_2014 <- acs.fetch(endyear = 2014, 
-                     span = 5, # x-year estimate
-                     geography=MIbyCounty, 
-                     #table.name,
-                     #table.number, 
-                     variable = c('B01001_001','B09001_001'), 
-                     #keyword, 
-                     #key, 
-                     col.names = "auto")
-
-MI_2013 <- acs.fetch(endyear = 2013, span = 5, geography=MIbyCounty,  
-                     variable = c('B01001_001','B09001_001'), col.names = "auto")
-MI_2012 <- acs.fetch(endyear = 2012, span = 5, geography=MIbyCounty,  
-                     variable = c('B01001_001','B09001_001'), col.names = "auto")
-MI_2011 <- acs.fetch(endyear = 2011, span = 5, geography=MIbyCounty,  
-                     variable = c('B01001_001','B09001_001'), col.names = "auto")
-MI_2010 <- acs.fetch(endyear = 2010, span = 5, geography=MIbyCounty,  
-                     variable = c('B01001_001','B09001_001'), col.names = "auto")
-MI_2009 <- acs.fetch(endyear = 2009, span = 5, geography=MIbyCounty,  
-                     variable = c('B01001_001','B09001_001'), col.names = "auto")
-
-
-# For endyears prior to 2009, no acs package CensusAPI data
-#####
-
-# Make a dataframe
-#####
-
-# ...for 2015
-MI_df_15 <- data.frame(estimate(MI_2015))
-colnames(MI_df_15)=c("TotalPop","Under18")
-MI_df_15$Year <- 2015  #add year variable
-MI_df_15$County <- rownames(MI_df_15) #create new var using rownames
-rownames(MI_df_15) <- NULL #nullify existing rownames
-
-# ...for 2014
-MI_df_14 <- data.frame(estimate(MI_2014))
-colnames(MI_df_14)=c("TotalPop","Under18")
-MI_df_14$Year <- 2014  #add year variable
-MI_df_14$County <- rownames(MI_df_14) #create new var using rownames
-rownames(MI_df_14) <- NULL #nullify existing rownames
-
-# ...for 2013
-MI_df_13 <- data.frame(estimate(MI_2013))
-colnames(MI_df_13)=c("TotalPop","Under18")
-MI_df_13$Year <- 2013  #add year variable
-MI_df_13$County <- rownames(MI_df_13) #create new var using rownames
-rownames(MI_df_13) <- NULL #nullify existing rownames
-
-# ...for 2012
-MI_df_12 <- data.frame(estimate(MI_2012))
-colnames(MI_df_12)=c("TotalPop","Under18")
-MI_df_12$Year <- endyear(MI_2012)  #add year variable
-MI_df_12$County <- rownames(MI_df_12) #create new var using rownames
-rownames(MI_df_12) <- NULL #nullify existing rownames
-
-# ...for 2011
-MI_df_11 <- data.frame(estimate(MI_2011))
-colnames(MI_df_11)=c("TotalPop","Under18")
-MI_df_11$Year <- endyear(MI_2011)  #add year variable
-MI_df_11$County <- rownames(MI_df_11) #create new var using rownames
-rownames(MI_df_11) <- NULL #nullify existing rownames
-
-# ...for 2010
-MI_df_10 <- data.frame(estimate(MI_2010))
-colnames(MI_df_10)=c("TotalPop","Under18")
-MI_df_10$Year <- endyear(MI_2010)  #add year variable
-MI_df_10$County <- rownames(MI_df_10) #create new var using rownames
-rownames(MI_df_10) <- NULL #nullify existing rownames
-
-# ...for 2009
-MI_df_09 <- data.frame(estimate(MI_2009))
-colnames(MI_df_09)=c("TotalPop","Under18")
-MI_df_09$Year <- endyear(MI_2009)  #add year variable
-MI_df_09$County <- rownames(MI_df_09) #create new var using rownames
-rownames(MI_df_09) <- NULL #nullify existing rownames
-
-MI_df <- rbind(MI_df_15,MI_df_14,MI_df_13,MI_df_12,MI_df_11,MI_df_10,MI_df_09) #bind the 4 years together
-MI_df <- MI_df[,c(3,4,1,2)] #reorder columns
-MI_df$Over18 <- MI_df$TotalPop-MI_df$Under18 # compute pop over 18
-MI_df$County <- as.factor(MI_df$County)
-
-# Clean up our messy environs
-rm(MI_df_15);rm(MI_df_14);rm(MI_df_13);rm(MI_df_12);rm(MI_df_11);rm(MI_df_10);rm(MI_df_09)
-rm(MI_2015);rm(MI_2014);rm(MI_2013);rm(MI_2012);rm(MI_2011);rm(MI_2010);rm(MI_2009)
-rm(lookup_MI);rm(MIbyCounty);rm(MIcounties)
-
-# MI_df <- MI_df[,c(1,7,8,6,2:5)] #reorder columns
+for (i in 2010:2016) {
+  x <- 
+    get_acs(
+      geography = "county",
+      variables = c('B01001_001','B09001_001'),
+      year = i,
+      output = "wide",
+      state = "MI",
+      survey = "acs5"
+    ) %>%
+    mutate(year = i)
+  
+  df %<>% bind_rows(x)
+}
 
 pop_yr <-
-MI_df %>%
-  mutate(county = gsub(" County, Michigan","",County),
-         key = paste0(county,"_",Year)) %>%
+  df %>% 
+  rename(
+    county = NAME,
+    TotalPop = B01001_001E,
+    TotalPop_moe = B01001_001M,
+    Under18 = B09001_001E,
+    Under18_moe = B09001_001M
+  ) %>%
+  mutate(
+    year = fct_expand(as.character(year),as.character(1999:2017)),
+    year = fct_relevel(year,as.character(1999:2017))
+  ) %>%
+  complete(county,year) %>%
+  group_by(county) %>%
+  # Apply 2016 population values 'down' to 2017
+  fill(TotalPop, .direction = "down") %>%
+  # Apply 2010 population values 'up' to 1999
+  fill(TotalPop, .direction = "up") %>%
+  ungroup() %>%
+  mutate(
+    county = str_replace(county, " County, Michigan",""),
+    key = paste0(county,"_",year)
+  ) %>%
   select(key,TotalPop)
 
 # Aggregate population numbers by CMHSP regions
 
 drug_death %<>%
-  left_join(pop_yr, by = "key") %>%
+  inner_join(pop_yr, by = "key") %>%
   mutate(
     CMHSP = dplyr::recode(
       county, 
@@ -231,11 +141,8 @@ drug_death %<>%
     )
   )
 
-
-detach("package:plyr", unload=TRUE)
-
 # Remove
-rm(pop_yr); rm(MI_df); rm(byCMHSP)
+rm(pop_yr); rm(x); rm(df)
 
 drug_death %<>%
   ungroup() %>% droplevels() %>%
@@ -246,4 +153,4 @@ drug_death %<>%
          deaths,pct_deaths,deaths_per_100k,TotalPop) %>%
   ungroup() %>% droplevels()
 
-write.csv(drug_death, "misuddr-app/data/drug_death.csv")
+write_csv(drug_death, "misuddr-app/data/drug_death.csv")
