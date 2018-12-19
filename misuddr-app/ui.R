@@ -162,6 +162,11 @@ dashboardPage(
                 ) 
               ),
               p(
+                strong("Synthetic opioid deaths"),
+                " Case meeting the all overdose definition and has at 
+                least one contributing case of death coded as T40.4"
+              ),
+              p(
                 strong("Data source"),": ",
                 em("Michigan Death Certificates, Division for Vital Records and 
                    Health Statistics, Michigan Department of Health and Human 
@@ -184,10 +189,13 @@ dashboardPage(
               selectInput(
                 "cause",
                 label = "Select cause of death:",
-                choices = c("Heroin overdose deaths",
-                            "Opioid overdose deaths",
-                            "All overdose deaths"), 
-                selected = "Opioid overdoses"
+                choices = c(
+                  "Heroin-related overdose",
+                  "Opioid-related overdose",
+                  "Synthetic opioid-related overdose",
+                  "All overdose"
+                ), 
+                selected = "All overdose"
               ),
               tabBox(
                 tabPanel(
@@ -310,7 +318,7 @@ dashboardPage(
                 "radio_measure", 
                 label = h4("Measure:"),
                 choices = c("Rate per 100k","Percent change"), 
-                selected = "Percent change"),
+                selected = "Rate per 100k"),
               tabBox(
                 width = NULL,
                 tabPanel(

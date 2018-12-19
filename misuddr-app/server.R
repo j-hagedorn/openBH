@@ -111,11 +111,13 @@ shinyServer(function(input, output) {
   
   output$death_rate <- renderPlotly({
     
-    cause_filt <- if (input$cause == "Heroin overdose deaths") {
-      c("heroin")
-    } else if (input$cause == "Opioid overdose deaths") {
-      c("opioid")
-    } else c("alldrug")
+    cause_filt <- if (input$cause == "Heroin-related overdose") {
+      c("Heroin")
+    } else if (input$cause == "Synthetic opioid-related overdose") {
+      c("Synthetic")
+    } else if (input$cause == "Opioid-related overdose") {
+      c("Opioids")
+    } else c("All")
     
     deaths() %>%
       filter(cause == cause_filt
@@ -155,11 +157,13 @@ shinyServer(function(input, output) {
   
   output$death_rate_tbl <- renderDataTable({
     
-    cause_filt <- if (input$cause == "Heroin overdose deaths") {
-      c("heroin")
-    } else if (input$cause == "Opioid overdose deaths") {
-      c("opioid")
-    } else c("alldrug")
+    cause_filt <- if (input$cause == "Heroin-related overdose") {
+      c("Heroin")
+    } else if (input$cause == "Synthetic opioid-related overdose") {
+      c("Synthetic")
+    } else if (input$cause == "Opioid-related overdose") {
+      c("Opioids")
+    } else c("All")
     
     deaths() %>%
       filter(cause == cause_filt
@@ -220,11 +224,13 @@ shinyServer(function(input, output) {
   
   output$death_bar <- renderPlotly({
     
-    cause_filt <- if (input$cause == "Heroin overdose deaths") {
-      c("heroin")
-    } else if (input$cause == "Opioid overdose deaths") {
-      c("opioid")
-    } else c("alldrug")
+    cause_filt <- if (input$cause == "Heroin-related overdose") {
+      c("Heroin")
+    } else if (input$cause == "Synthetic opioid-related overdose") {
+      c("Synthetic")
+    } else if (input$cause == "Opioid-related overdose") {
+      c("Opioids")
+    } else c("All")
       
     deaths() %>%
       filter(cause == cause_filt
@@ -263,11 +269,13 @@ shinyServer(function(input, output) {
   
   output$death_bar_tbl <- renderDataTable({
     
-    cause_filt <- if (input$cause == "Heroin overdose deaths") {
-      c("heroin")
-    } else if (input$cause == "Opioid overdose deaths") {
-      c("opioid")
-    } else c("alldrug")
+    cause_filt <- if (input$cause == "Heroin-related overdose") {
+      c("Heroin")
+    } else if (input$cause == "Synthetic opioid-related overdose") {
+      c("Synthetic")
+    } else if (input$cause == "Opioid-related overdose") {
+      c("Opioids")
+    } else c("All")
     
     deaths() %>%
       filter(cause == cause_filt
@@ -346,10 +354,10 @@ shinyServer(function(input, output) {
                pct_chg = round((deaths-lag(deaths))/lag(deaths)*100, 
                                digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        mutate(cause = dplyr::recode(cause,
-                              `opioid` = 'Opioids',
-                              `heroin` = 'Heroin',
-                              `alldrug` = 'Any drug')) %>%
+        # mutate(cause = dplyr::recode(cause,
+        #                       `opioid` = 'Opioids',
+        #                       `heroin` = 'Heroin',
+        #                       `alldrug` = 'Any drug')) %>%
         plot_ly(x = ~year, y = ~deaths_per_100k, color = ~cause,
                 name = "Rate per 100k", 
                 text = ~paste("Number of deaths: ", deaths,
@@ -389,10 +397,10 @@ shinyServer(function(input, output) {
         mutate(pct_chg = round((deaths-lag(deaths))/ifelse(lag(deaths)==0,1,lag(deaths))*100, 
                                digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        mutate(cause = dplyr::recode(cause,
-                              `opioid` = 'Opioids',
-                              `heroin` = 'Heroin',
-                              `alldrug` = 'Any drug')) %>%
+        # mutate(cause = dplyr::recode(cause,
+        #                       `opioid` = 'Opioids',
+        #                       `heroin` = 'Heroin',
+        #                       `alldrug` = 'Any drug')) %>%
         plot_ly(x = ~year, y = ~pct_chg, color = ~cause,
                 name = "Rate per 100k", 
                 text = ~paste("# deaths: ", deaths,
