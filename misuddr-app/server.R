@@ -334,7 +334,7 @@ shinyServer(function(input, output) {
     
     if (input$radio_measure == "Rate per 100k") {
       
-      notetxt <- paste0("Annual overdose deaths per 1,000 population",
+      notetxt <- paste0("Annual overdose deaths per 100,000 population",
                         "<br>for the region served by ",
                         ifelse(input$select_cmh == "All",
                                yes = paste0(tolower(input$select_cmh), " CMHs "),
@@ -347,22 +347,22 @@ shinyServer(function(input, output) {
         filter(is.na(TotalPop) == F) %>%
         droplevels() %>% ungroup() %>%
         group_by(year,cause) %>%
-        summarize(deaths = sum(deaths, na.rm = T),
-                  TotalPop = sum(TotalPop, na.rm = T)) %>% # add pop across years
+        summarize(
+          deaths = sum(deaths, na.rm = T),
+          TotalPop = sum(TotalPop, na.rm = T) # add pop across years
+        ) %>% 
         ungroup() %>% droplevels() %>%
-        mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1),
-               pct_chg = round((deaths-lag(deaths))/lag(deaths)*100, 
-                               digits = 1)) %>%
+        mutate(
+          deaths_per_100k = round(deaths/TotalPop*100000, digits = 1),
+          pct_chg = round((deaths-lag(deaths))/lag(deaths)*100, digits = 1)
+        ) %>%
         ungroup() %>% droplevels() %>%
-        # mutate(cause = dplyr::recode(cause,
-        #                       `opioid` = 'Opioids',
-        #                       `heroin` = 'Heroin',
-        #                       `alldrug` = 'Any drug')) %>%
-        plot_ly(x = ~year, y = ~deaths_per_100k, color = ~cause,
-                name = "Rate per 100k", 
-                text = ~paste("Number of deaths: ", deaths,
-                             "<br>Total population: ", TotalPop),
-                line = list(shape = "spline")) %>%
+        plot_ly(
+          x = ~year, y = ~deaths_per_100k, color = ~cause,
+          text = ~paste("Number of deaths: ", deaths,"<br>Total population: ", TotalPop)
+        ) %>%
+        add_lines(line = list(shape = "spline")) %>%
+        # add_markers(showlegend = FALSE) %>%
         layout(title = paste0("Trend of overdose deaths by cause"),
                xaxis = list(title = "Year"),
                yaxis = list(title = "Deaths per 100,000 population",
@@ -397,15 +397,11 @@ shinyServer(function(input, output) {
         mutate(pct_chg = round((deaths-lag(deaths))/ifelse(lag(deaths)==0,1,lag(deaths))*100, 
                                digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        # mutate(cause = dplyr::recode(cause,
-        #                       `opioid` = 'Opioids',
-        #                       `heroin` = 'Heroin',
-        #                       `alldrug` = 'Any drug')) %>%
-        plot_ly(x = ~year, y = ~pct_chg, color = ~cause,
-                name = "Rate per 100k", 
-                text = ~paste("# deaths: ", deaths,
-                             "<br># deaths (prev yr): ", lag(deaths)),
-                line = list(shape = "spline")) %>%
+        plot_ly(
+          x = ~year, y = ~pct_chg, color = ~cause,
+          text = ~paste("# deaths: ", deaths,"<br># deaths (prev yr): ", lag(deaths))
+        ) %>%
+        add_lines(line = list(shape = "spline")) %>%
         layout(title = paste0("Trend of overdose deaths by cause"),
                xaxis = list(title = "Year"),
                yaxis = list(title = "Percent change since prior year",
@@ -423,11 +419,13 @@ shinyServer(function(input, output) {
   
   output$line_group <- renderPlotly({
     
-    cause_filt <- if (input$cause_line == "Heroin overdose deaths") {
-      c("heroin")
-    } else if (input$cause_line == "Opioid overdose deaths") {
-      c("opioid")
-    } else c("alldrug")
+    cause_filt <- if (input$cause_line == "Heroin-related overdose") {
+      c("Heroin")
+    } else if (input$cause_line == "Synthetic opioid-related overdose") {
+      c("Synthetic")
+    } else if (input$cause_line == "Opioid-related overdose") {
+      c("Opioids")
+    } else c("All")
     
     if (input$radio_measure == "Rate per 100k") {
       
@@ -441,8 +439,7 @@ shinyServer(function(input, output) {
                                no = paste0("<br>managed by the PIHP of ", input$select_pihp)))
       
       deaths() %>%
-        filter(is.na(TotalPop) == F
-               & cause %in% cause_filt) %>%
+        filter(is.na(TotalPop) == F & cause %in% cause_filt) %>%
         droplevels() %>% ungroup() %>%
         group_by(year,group) %>%
         summarize(deaths = sum(deaths, na.rm = T),
@@ -450,10 +447,11 @@ shinyServer(function(input, output) {
         ungroup() %>% droplevels() %>%
         mutate(deaths_per_100k = round(deaths/TotalPop*100000, digits = 1)) %>%
         ungroup() %>% droplevels() %>%
-        plot_ly(x = ~year, y = ~deaths_per_100k, color = ~group,
-                text = ~paste("Number of deaths: ", deaths,
-                             "<br>Total population: ", TotalPop),
-                line = list(shape = "spline")) %>%
+        plot_ly(
+          x = ~year, y = ~deaths_per_100k, color = ~group,
+          text = ~paste("Number of deaths: ", deaths,"<br>Total population: ", TotalPop)
+        ) %>%
+        add_lines(line = list(shape = "spline")) %>%
         layout(title = paste0("Trend of ",input$cause_line," by ",input$group),
                xaxis = list(title = "Year"),
                yaxis = list(title = "Deaths per 100,000 population",
