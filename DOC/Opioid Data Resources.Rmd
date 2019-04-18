@@ -1,0 +1,70 @@
+---
+title: "Opioid-Related Data Set Descriptions"
+author: "TBD Solutions"
+date: "April 16, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Michigan Resident Death File: Contains records of all deaths that occur within the state of Michigan or are filed with the state registrar. [Link](https://www.mdch.state.mi.us/osr/Index.asp?Id=4)
+
+Michigan Violent Death Reporting System (MiVDRS): Contains records of violent deaths that occur within the state of Michigan including homicides, suicides, and undetermined intent deaths as well as accidental overdose deaths. [Link](https://www.icpsr.umich.edu/icpsrweb/ICPSR/series/217)
+
+Michigan Automated Prescription System: MAPS is an electronic query-based system used to track controlled substance (schedules 2-5 drugs) prescriptions and dispensations. [Link](https://www.michigan.gov/lara/0,4601,7-154-89334_72600_72603_55478_55479---,00.html)
+
+Michigan Inpatient Database: Contains records of inpatient admissions to acute care hospitals in the Michigan Hospital Association and in contiguous states.  [Link](https://www.datakoala.com/)
+
+Michigan Outpatient Database: Contains records of emergency department visits to most acute care hospitals in the Michigan Hospital Association.  [Link](https://www.datakoala.com/)
+
+Michigan Syndromic Surveillance System (MSSS)	: The MSSS is a platform for exchanging real-time, patient-level information on chief complaint, demographics, and other healthcare information between hospital emergency departments and urgent care facilities in Michigan and the MDHHS. The MSSS is a joint project with the Michigan Bureau of Epidemiology and Population Health, the Michigan Office of Public Health Preparedness (OPHP), the Michigan Department of Technology, Management & Budget (DTMB) and Altarum Institute. [Link](https://michiganhealthit.org/public-health/msss/)
+
+Youth Risk Behavior Survey: Biennial survey of representative sample of high school students in public schools across Michigan.
+
+Behavioral Risk Factor Surveillance System (BRFSS): The BRFSS is an annual, telephone-based survey of representative sample of Michigan residents aged 18 years and older.  
+
+National Survey of Drug Use and Health: The National Survey on Drug Use and Health (NSDUH) is a nationwide survey of individuals 12 years of age and older that collects information on substance use, mental health, and related conditions.
+
+Fatality Analysis Reporting System: FARS is a nationwide census providing National Highway Traffic Safety Administration, Congress and the American public yearly data regarding fatal injuries suffered in motor vehicle traffic crashes. [Link](https://www.nhtsa.gov/research-data/fatality-analysis-reporting-system-fars)
+
+Michigan EMS Information System: The Michigan EMS Information System (MiEMSSIS) houses standardized data collected from all emergency medical service agencies throughout the state of Michigan. [Link](https://www.mi-emsis.org/)
+
+National HIV Behavioral Surveillance: The NHBS is used to conduct surveillance on risk behaviors among three specific groups of individuals who are at high risk of HIV infection; including men who have sex with men, high-risk heterosexuals, and persons who inject drugs (PWID or intravenous drug users/IDU).  This section will focus primarily on the IDU survey cycle. [Link](https://www.cdc.gov/hiv/statistics/systems/nhbs/index.html)
+
+Michigan Treatment Episode Dataset: Michigan Treatment Episode Dataset is a part of the Treatment Episode Data Set (TEDS) that maintained by the Center for Behavioral Health Statistics and Quality, Substance Abuse and Mental Health Services Administration. The TEDS database includes records for substance abuse treatment admissions aged 12 or older annually, has two major components: TEDS-Admissions and TEDS-Discharges.
+
+MDHHS Data Warehouse: The MDHHS Data Warehouse is a component of the Michigan Data Hub, which houses data across all sectors of state government. The MDHHS Data Warehouse is a complex database that contains health services data and links data across programs such as:
+•	Community Mental Health
+•	Children’s Special Health Care Services
+•	EPSDT
+•	Habilitation Support Waiver
+•	Home Help Payments
+•	Lead Screening
+•	Long Term Care
+•	Home Care
+•	Nursing Home
+•	OASIS
+•	Michigan Care Improvement Registry
+•	Medicaid Fee-for-Service
+•	Medicaid Beneficiary Eligibility
+•	Medicaid Managed Care
+•	Medicaid MI Choice Minimum Data Set
+•	Medicaid Provider Information (eligibility, license, network, DEA/CLIA licensure)
+•	MIChild
+•	Maternal and Infant Health Program
+•	Medicare Enrollment
+•	Pharmacy Information (claims, NDC, MAC, CMS rebate)
+•	Substance Abuse
+•	Third Party Liability
+•	Vital Records - Death/Birth/Paternity
+•	Women Infants and Children
+The Medicaid Claims Data Warehouse is a component of the MDHHS Data Warehouse and contains all claims submitted for reimbursement of services and encounters covered by one or more of the state-governed Medicaid programs, including, but not limited to Medicaid Managed Care, Medicaid FFS, MIChild, Healthy Michigan Plan, MI Health Link, Flint Water Crisis Medicaid Expansion, and Healthy Kids/Healthy Kids Dental.
+The MDHHS Data Warehouse also contains Admission-Discharge-Transfer (ADT) messages for Medicaid beneficiaries. ADT messages are a type of Health Level 7 (HL7) message that follows a standard format and allows the exchange of patient-level health information across health care providers and facilities. 
+
+Swift Toxicology of Opioid-Related Mortalities (STORM): STORM is a project funded by the Enhanced Sate Opioid Overdose Surveillance grant and administered by the Western Michigan University Homer Stryker School of Medicine (WMed) to increase post-mortem testing for opioids by medical examiners.
+
+Surveillance of Neonatal Abstinence Syndrome: Neonatal Abstinence Syndrome (NAS), sometimes referred to as Neonatal Withdrawal Syndrome (NWS), occurs in a newborn who was exposed to addictive illegal or prescription drugs in utero. The NAS Surveillance System links birth records and hospital records to identify infants diagnosed with NAS. [Link](http://www.astho.org/Prevention/Rx/NAS/)
+
