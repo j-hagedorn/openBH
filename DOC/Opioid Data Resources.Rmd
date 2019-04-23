@@ -9,6 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Related Guidelines
+
+[CDC Guideline for Prescribing Opioids for Chronic Pain](https://www.cdc.gov/drugoverdose/prescribing/guideline.html)
+
+[PsychU Presentation on The Opioid Crisis](https://handouts-live.s3.amazonaws.com/a92fbc00cce54b3c915dfcbd315bb6fd?sessionId=6145649173542254361&participantId=2400257)
+
+# Data Options
 
 Michigan Resident Death File: Contains records of all deaths that occur within the state of Michigan or are filed with the state registrar. [Link](https://www.mdch.state.mi.us/osr/Index.asp?Id=4)
 
