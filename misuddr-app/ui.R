@@ -36,7 +36,7 @@ dashboardPage(
         "select_pihp",
         label = "Select PIHP:",
         choices = c("All", levels(as.factor(drug_death$PIHPname))), 
-        selected = "MSHN"
+        selected = "All"
       ),
       uiOutput(
         "select_cmh"
@@ -56,15 +56,15 @@ dashboardPage(
               collapsible = T, 
               width = NULL,
               p(
-                "According to the United States' ",
-                a(href = "http://www.cdc.gov/drugoverdose/epidemic/index.html",
-                  "Centers for Disease Control"),
-                ", more people died from drug overdoses in 2014 than any other 
-                year on record. Most drug overdose deaths (>60%) involve an 
-                opioid, primarily prescription pain relievers and heroin. 
-                And the problem is growing.  Since 1999, the rate of overdose 
-                deaths involving opioids (including prescription opioid pain 
-                relievers and heroin) has nearly quadrupled."
+                "The ",
+                a(href = "https://www.cdc.gov/nchs/products/databriefs/db329.htm",
+                  "Centers for Disease Control and Prevention"),
+                " (CDC) report that there were more than 70,000 drug overdose deaths 
+                in the United States in 2017, including more than 47,000 from opioid 
+                overdoses. These are the highest numbers on record. Today, more than 
+                two million people in the United States are addicted to opioids, which 
+                are responsible for about 130 deaths in America every day; by comparison, 
+                there are approximately 102 deaths in America per day from car crashes."
               )
             ),
             box(
@@ -74,12 +74,16 @@ dashboardPage(
               collapsed = F,
               width = NULL,
               p(
-                "Michigan was one of a handful of states to show a statistically 
-                significant increase in the rate of drug overdoses between 2013 
-                and 2014 (",
+                "Michigan ranks eighth in the country in the number of overdose deaths. 
+                In 2017, there were 2,033 overdose deaths involving opioids in Michigan — 
+                a rate of 21.2 deaths per 100,000 persons, which is higher than the national 
+                rate of 14.6 deaths per 100,000 persons. The greatest increase in opioid 
+                deaths was seen in cases involving synthetic opioids (mainly fentanyl), from 
+                72 deaths in 2012 to 1,368 in 2017. Deaths involving heroin increased from 
+                263 to 783 deaths in the same 5-year period. (",
                 em("Source: "),
-                a(href = "http://www.cdc.gov/drugoverdose/data/statedeaths.html",
-                  "CDC"), ")."
+                a(href = "https://www.drugabuse.gov/opioid-summaries-by-state/michigan-opioid-summary",
+                  "NIDA"), ")."
               ),
               p(
                 "In order to better understand the nuanced local variations 
