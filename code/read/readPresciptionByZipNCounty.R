@@ -91,7 +91,6 @@ read_newer_xlsx <- function(docname, year){
       'STATE' = 'PRESCRIBER STATE'
     )
   
-  
   # read in sheet 3
   disp_county <- read_xlsx(path, sheet = 3)
   disp_county <- disp_county[-nrow(disp_county), ] %>%
@@ -212,5 +211,13 @@ combined_by_county <- rbind(
   as.data.frame(list_of_df_2017[2])
 )
 
+# Remove dataframes created during processing
 
+rm(
+  list = c(
+    "list_of_df_2007","list_of_df_2008","list_of_df_2009","list_of_df_2010",
+    "list_of_df_2011","list_of_df_2012","list_of_df_2013","list_of_df_2014",
+    "list_of_df_2015","list_of_df_2016","list_of_df_2017"
+  )
+)
 
