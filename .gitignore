@@ -9,6 +9,7 @@
 *.xls
 *.xlsx
 *.pdf
+*.feather
 *.zip
 
 # Shapefiles
